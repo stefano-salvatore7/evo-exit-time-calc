@@ -1,32 +1,15 @@
 // ==UserScript==
-// @name          EVO Exit Time Calculator (Edge Fix)
+// @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.20
-// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), compatibile anche con Edge. Bottone accanto ad "Aggiorna". Aggiunge pausa predefinita di 10 minuti.
-// @author        stefano
+// @version       1.19
+// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
+// @author        Your Name
 // @match         https://personale-unibo.hrgpi.it/*
 // @grant         none
-// @run-at        document-idle
 // ==/UserScript==
 
 (function () {
     'use strict';
-
-    console.log("✅ EVO Exit Time Calculator avviato");
-
-    // (DEBUG visivo in alto a sinistra)
-    const debugBanner = document.createElement("div");
-    debugBanner.textContent = "🔍 EVO Script attivo!";
-    Object.assign(debugBanner.style, {
-        position: "fixed",
-        top: "0",
-        left: "0",
-        zIndex: 9999,
-        backgroundColor: "#ffc",
-        padding: "5px",
-        fontSize: "12px"
-    });
-    document.body.appendChild(debugBanner);
 
     function timeToMinutes(t) {
         const [h, m] = t.split(':').map(Number);
@@ -41,9 +24,7 @@
 
     function calcolaPerOggi(event) {
         event.stopPropagation();
-        event.preventDefault();
-
-        console.log("--- Avvio calcolo per oggi ---");
+        event.preventDefault(); 
 
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate());
@@ -52,35 +33,36 @@
         let foundTodayRow = false;
 
         for (const riga of righeTabella) {
-            const primaCella = riga.querySelector("td");
+            const primaCella = riga.querySelector("td"); 
             if (primaCella) {
-                const testo = primaCella.textContent.trim();
-                if (testo === giornoOggi) {
+                const testoPrimaCella = primaCella.textContent.trim();
+                if (testoPrimaCella === giornoOggi) {
                     foundTodayRow = true;
+                    righeDelGiorno.push(riga); 
+                } 
+                else if (foundTodayRow && testoPrimaCella === "") { 
                     righeDelGiorno.push(riga);
-                } else if (foundTodayRow && testo === "") {
-                    righeDelGiorno.push(riga);
-                } else if (foundTodayRow) {
-                    break;
+                } 
+                else if (foundTodayRow && testoPrimaCella !== "") { 
+                    break; 
                 }
             }
         }
 
         const badgeList = [];
+
         for (const riga of righeDelGiorno) {
-            const badgeElements = riga.querySelectorAll("span[class*='badge-'], div[class*='badge-']");
+            const badgeElements = riga.querySelectorAll("span[class*='badge-success'], span[class*='badge-danger'], div[class*='badge-success'], div[class*='badge-danger']");
             badgeElements.forEach(badge => {
-                const text = badge.textContent.trim();
-                const tipo = text.startsWith("E ") ? "E" : (text.startsWith("U ") ? "U" : null);
-                if (tipo && /^\d{2}:\d{2}$/.test(text.slice(2))) {
-                    badgeList.push({ tipo, orario: text.slice(2), originalElement: badge });
+                const orarioTesto = badge.textContent.trim();
+                const tipo = orarioTesto.startsWith("E ") ? "E" : (orarioTesto.startsWith("U ") ? "U" : null);
+                if (tipo && /^\d{2}:\d{2}$/.test(orarioTesto.slice(2))) {
+                    badgeList.push({ tipo, orario: orarioTesto.slice(2), originalElement: badge });
                 }
             });
         }
 
         badgeList.sort((a, b) => timeToMinutes(a.orario) - timeToMinutes(b.orario));
-
-        if (!badgeList.length) return;
 
         const entrataInizialeObj = badgeList.find(b => b.tipo === "E");
         if (!entrataInizialeObj) return;
@@ -131,51 +113,50 @@
 
     let calcolaButton = null;
 
-    function waitUntil(conditionFn, callback, timeout = 10000, interval = 300) {
-        const start = Date.now();
-        const handle = setInterval(() => {
-            if (conditionFn()) {
-                clearInterval(handle);
-                callback();
-            } else if (Date.now() - start > timeout) {
-                clearInterval(handle);
-                console.warn("⏱ Timeout in attesa degli elementi della pagina.");
-            }
-        }, interval);
-    }
+    const waitForPageElements = setInterval(() => {
+        const cartellinoTitle = document.querySelector('div.title-label');
+        const isCartellinoPage = cartellinoTitle && cartellinoTitle.textContent.includes('Cartellino');
+        const timeTable = document.querySelector('table');
 
-    waitUntil(() => {
-        const title = document.querySelector('div.title-label');
-        const table = document.querySelector('table');
-        return title && title.textContent.includes('Cartellino') && table;
-    }, () => {
-        calcolaButton = document.createElement("button");
-        calcolaButton.textContent = "Ora del Giorno";
-        Object.assign(calcolaButton.style, {
-            padding: "10px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            marginLeft: "10px"
-        });
-        calcolaButton.type = "button";
-        calcolaButton.onclick = calcolaPerOggi;
+        if (isCartellinoPage && timeTable) {
+            clearInterval(waitForPageElements);
 
-        document.body.appendChild(calcolaButton);
+            calcolaButton = document.createElement("button");
+            calcolaButton.textContent = "Ora del Giorno";
 
-        waitUntil(() => document.getElementById("firstFocus"), () => {
-            const updateBtn = document.getElementById("firstFocus");
-            if (updateBtn && updateBtn.parentNode) {
+            Object.assign(calcolaButton.style, {
+                padding: "10px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "bold",
+                marginLeft: "10px"
+            });
+
+            calcolaButton.setAttribute('type', 'button');
+            calcolaButton.onclick = calcolaPerOggi;
+
+            document.body.appendChild(calcolaButton);
+            startPositioningButton();
+        }
+    }, 500);
+
+    function startPositioningButton() {
+        const waitForUpdateButton = setInterval(() => {
+            const updateButton = document.getElementById("firstFocus");
+
+            if (calcolaButton && updateButton) {
+                clearInterval(waitForUpdateButton);
                 if (calcolaButton.parentNode) {
-                    calcolaButton.remove();
+                    calcolaButton.parentNode.removeChild(calcolaButton);
                 }
-                updateBtn.parentNode.insertBefore(calcolaButton, updateBtn.nextSibling);
+                updateButton.parentNode.insertBefore(calcolaButton, updateButton.nextSibling);
+                calcolaButton.onclick = calcolaPerOggi;
             }
-        });
-    });
+        }, 500);
+    }
 
 })();
