@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.17 // Versione aggiornata con controllo "Cartellino"
-// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino".
+// @version       1.18 // Versione aggiornata con pausa predefinita di 10 minuti
+// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
 // @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
 // @match         https://personale-unibo.hrgpi.it/*
 // @grant         none
@@ -10,9 +10,6 @@
 
 (function () {
     'use strict';
-
-    // ... (le funzioni timeToMinutes, minutesToTime e calcolaPerOggi rimangono identiche) ...
-    // Le ho omesse qui per brevità, ma nel tuo script le devi lasciare!
 
     /**
      * Converte una stringa oraria (HH:mm) in minuti totali dalla mezzanotte.
@@ -39,11 +36,11 @@
      * Funzione principale per calcolare l'orario di uscita previsto.
      * @param {Event} event - L'oggetto evento del click per prevenire la propagazione.
      */
-    function calcolaPerOggi(event) { 
+    function calcolaPerOggi(event) {
         event.stopPropagation();
         event.preventDefault(); 
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.17) ---");
+        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.18) ---");
         
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate()); 
@@ -142,30 +139,41 @@
         }
         console.log(`Prima E dopo l'ultima U: ${pausaFine ? pausaFine : 'Nessuna'}`);
 
+        // Minuti lavorativi base (7 ore e 12 minuti = 432 minuti)
+        let minutiLavorativiBase = 432; 
+        let pausaConsiderata = 0; // Minuti di pausa che verranno effettivamente inclusi nel calcolo
 
-        let minutiLavorativi = 432; 
-        let pausaRecuperata = 0;
+        // Logica per la pausa predefinita di 10 minuti
+        const PAUSA_MINIMA_PREDEFINITA = 10; // 10 minuti di pausa predefinita
 
         if (pausaInizio && pausaFine) {
             const minutiPausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
             console.log(`Minuti di pausa calcolati (reali): ${minutiPausaReale}`);
 
+            // Se la pausa reale è valida (tra 1 e 179 minuti)
             if (minutiPausaReale > 0 && minutiPausaReale < 180) {
-                minutiLavorativi += minutiPausaReale;
-                pausaRecuperata = minutiPausaReale;
-                console.log(`Pausa di ${minutiPausaReale} minuti recuperata. Nuovi minuti lavorativi: ${minutiLavorativi}`);
+                // Prende il massimo tra la pausa reale e la pausa minima predefinita
+                pausaConsiderata = Math.max(PAUSA_MINIMA_PREDEFINITA, minutiPausaReale);
+                console.log(`Pausa considerata: ${pausaConsiderata} minuti (max tra reale e predefinita).`);
             } else {
-                console.log("Pausa non considerata per il recupero (fuori range 1-179 minuti o negativa).");
+                // Se la pausa reale non è valida (es. negativa o troppo lunga), usa la pausa minima predefinita
+                pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
+                console.log(`Pausa reale non valida, usando pausa predefinita: ${pausaConsiderata} minuti.`);
             }
         } else {
-            console.log("Nessuna pausa valida 'U' seguita da 'E' trovata.");
+            // Se non ci sono timbrature di pausa (U-E), usa la pausa minima predefinita
+            pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
+            console.log(`Nessuna pausa U-E valida trovata, usando pausa predefinita: ${pausaConsiderata} minuti.`);
         }
         
+        // Calcola i minuti lavorativi totali aggiungendo la pausa considerata
+        const minutiLavorativiTotali = minutiLavorativiBase + pausaConsiderata;
+
         const entrataInizialeMinuti = timeToMinutes(entrataIniziale);
-        const uscitaPrevistaMinuti = entrataInizialeMinuti + minutiLavorativi;
+        const uscitaPrevistaMinuti = entrataInizialeMinuti + minutiLavorativiTotali;
         const uscitaPrevista = minutesToTime(uscitaPrevistaMinuti);
 
-        console.log(`Calcolo finale: ${entrataIniziale} (entrata) + ${minutiLavorativi} minuti (lavoro base + pausa) = ${uscitaPrevista}`);
+        console.log(`Calcolo finale: ${entrataIniziale} (entrata) + ${minutiLavorativiTotali} minuti (lavoro base + pausa) = ${uscitaPrevista}`);
 
         const celle = righeDelGiorno[0].querySelectorAll("td");
         if (celle.length >= 8) {
@@ -173,7 +181,8 @@
             cellaOrario.textContent = uscitaPrevista;
             cellaOrario.style.color = "blue"; 
             cellaOrario.style.fontWeight = "bold"; 
-            cellaOrario.title = `Entrata: ${entrataIniziale} + ${minutiLavorativi} minuti (${pausaRecuperata} pausa recuperata)`;
+            // Aggiorna il tooltip per riflettere la pausa effettivamente considerata
+            cellaOrario.title = `Entrata: ${entrataIniziale} + ${minutiLavorativiTotali} minuti (${pausaConsiderata} pausa inclusa)`;
             console.log(`Orario ${uscitaPrevista} inserito nella cella.`);
         } else {
             console.warn("⚠️ Non ci sono abbastanza celle nella prima riga per inserire l'orario di uscita.");
@@ -185,20 +194,14 @@
 
     let calcolaButton = null;
 
-    // Intervallo principale: attende che la tabella e l'indicatore "Cartellino" siano presenti.
     const waitForPageElements = setInterval(() => {
-        // Cerca il div con la classe 'title-label' e il testo 'Cartellino'
         const cartellinoTitle = document.querySelector('div.title-label');
         const isCartellinoPage = cartellinoTitle && cartellinoTitle.textContent.includes('Cartellino');
-        
-        // Cerca anche la tabella delle timbrature
         const timeTable = document.querySelector('table');
 
-        // Se entrambi gli elementi sono presenti
         if (isCartellinoPage && timeTable) {
-            clearInterval(waitForPageElements); // Ferma questo intervallo
+            clearInterval(waitForPageElements); 
 
-            // Crea il bottone 'Calcola uscita oggi'
             calcolaButton = document.createElement("button");
             calcolaButton.textContent = "Calcola uscita oggi";
             
@@ -217,17 +220,13 @@
             calcolaButton.setAttribute('type', 'button'); 
             calcolaButton.onclick = calcolaPerOggi;
             
-            // Aggiunge temporaneamente il bottone al corpo del documento.
             document.body.appendChild(calcolaButton);
             console.log("Bottone 'Calcola uscita oggi' creato e aggiunto temporaneamente al body (solo su pagina Cartellino).");
 
-            // Avvia la fase di posizionamento del bottone
             startPositioningButton();
         }
     }, 500); 
 
-    // Secondo intervallo: attende che il bottone "Aggiorna" sia presente nel DOM
-    // per poter riposizionare il nostro bottone accanto ad esso.
     function startPositioningButton() {
         const waitForUpdateButton = setInterval(() => {
             const updateButton = document.getElementById("firstFocus");
