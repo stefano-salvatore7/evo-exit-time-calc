@@ -2,11 +2,12 @@
 
 Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `personale-unibo.hrgpi.it`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature e dell'eventuale pausa.
 
-**(Versione Script: 1.19)**
+**(Versione Script: 1.22)**
 
 ## Caratteristiche
 
 * **Calcolo Orario di Uscita:** Determina l'orario di uscita necessario per completare le 7 ore e 12 minuti di lavoro.
+* **Gestione Timbrature Flessibile:** Supporta sia il formato standard `E HH:mm` / `U HH:mm` che il formato "Telelavoro" `E[HH:mm]` / `U[HH:mm]`.
 * **Gestione Pausa Pranzo:** Calcola e include nel totale lavorato la durata della pausa pranzo (ultima "U" seguita dalla prima "E"). Aggiunge una pausa predefinita di 10 minuti se non rilevata o troppo breve (utilizza il valore maggiore tra la pausa effettiva e i 10 minuti).
 * **Iniezione Diretta:** Visualizza l'orario calcolato direttamente nella tabella delle timbrature del giorno.
 * **Posizionamento Intuitivo:** Il bottone "**Ora del Giorno**" è posizionato strategicamente accanto al bottone "Aggiorna".
@@ -49,3 +50,7 @@ Se desideri contribuire a migliorare questo script, sentiti libero di aprire una
 ## Log delle Versioni
 
 Per un riepilogo delle modifiche e delle funzionalità introdotte in ogni versione dello script, consulta il file [CHANGELOG.md](CHANGELOG.md) nel repository.
+
+---
+
+*Sviluppato con l'assistenza di Gemini.*
