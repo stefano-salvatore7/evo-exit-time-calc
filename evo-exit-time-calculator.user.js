@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.18
+// @version       1.19
 // @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
 // @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
 // @match         https://personale-unibo.hrgpi.it/*
@@ -40,7 +40,7 @@
         event.stopPropagation();
         event.preventDefault(); 
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.18) ---");
+        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.19) ---");
         
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate()); 
@@ -203,7 +203,7 @@
             clearInterval(waitForPageElements); 
 
             calcolaButton = document.createElement("button");
-            calcolaButton.textContent = "Calcola uscita oggi";
+            calcolaButton.textContent = "Ora del Giorno"; // MODIFICA QUI: TESTO DEL BOTTONE
             
             Object.assign(calcolaButton.style, {
                 padding: "10px",
@@ -221,7 +221,7 @@
             calcolaButton.onclick = calcolaPerOggi;
             
             document.body.appendChild(calcolaButton);
-            console.log("Bottone 'Calcola uscita oggi' creato e aggiunto temporaneamente al body (solo su pagina Cartellino).");
+            console.log("Bottone 'Ora del Giorno' creato e aggiunto temporaneamente al body (solo su pagina Cartellino).");
 
             startPositioningButton();
         }
@@ -239,7 +239,7 @@
                 }
 
                 updateButton.parentNode.insertBefore(calcolaButton, updateButton.nextSibling);
-                console.log("Bottone 'Calcola uscita oggi' riposizionato accanto al bottone Aggiorna.");
+                console.log("Bottone 'Ora del Giorno' riposizionato accanto al bottone Aggiorna.");
                 
                 calcolaButton.onclick = calcolaPerOggi;
                 console.log("Evento onclick ricollegato al bottone dopo il riposizionamento.");
