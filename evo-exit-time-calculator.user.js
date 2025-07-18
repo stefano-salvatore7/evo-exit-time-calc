@@ -1,120 +1,91 @@
 // ==UserScript==
-// @name          EVO Exit Time Calculator
+// @name          EVO Exit Time Calculator (Edge Fix)
 // @namespace     https://unibo.it/
-// @version       1.19
-// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
-// @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
+// @version       1.20
+// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), compatibile anche con Edge. Bottone accanto ad "Aggiorna". Aggiunge pausa predefinita di 10 minuti.
+// @author        stefano
 // @match         https://personale-unibo.hrgpi.it/*
 // @grant         none
+// @run-at        document-idle
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    /**
-     * Converte una stringa oraria (HH:mm) in minuti totali dalla mezzanotte.
-     * @param {string} t - L'orario in formato "HH:mm".
-     * @returns {number} Il numero totale di minuti.
-     */
+    console.log("✅ EVO Exit Time Calculator avviato");
+
+    // (DEBUG visivo in alto a sinistra)
+    const debugBanner = document.createElement("div");
+    debugBanner.textContent = "🔍 EVO Script attivo!";
+    Object.assign(debugBanner.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        zIndex: 9999,
+        backgroundColor: "#ffc",
+        padding: "5px",
+        fontSize: "12px"
+    });
+    document.body.appendChild(debugBanner);
+
     function timeToMinutes(t) {
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
 
-    /**
-     * Converte un numero totale di minuti dalla mezzanotte in una stringa oraria (HH:mm).
-     * @param {number} mins - Il numero totale di minuti.
-     * @returns {string} L'orario in formato "HH:mm".
-     */
     function minutesToTime(mins) {
         const h = String(Math.floor(mins / 60)).padStart(2, '0');
         const m = String(mins % 60).padStart(2, '0');
         return `${h}:${m}`;
     }
 
-    /**
-     * Funzione principale per calcolare l'orario di uscita previsto.
-     * @param {Event} event - L'oggetto evento del click per prevenire la propagazione.
-     */
     function calcolaPerOggi(event) {
         event.stopPropagation();
-        event.preventDefault(); 
+        event.preventDefault();
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.19) ---");
-        
+        console.log("--- Avvio calcolo per oggi ---");
+
         const oggi = new Date();
-        const giornoOggi = String(oggi.getDate()); 
-        console.log(`Giorno corrente: ${giornoOggi}`);
-
+        const giornoOggi = String(oggi.getDate());
         const righeTabella = document.querySelectorAll('table tr');
         let righeDelGiorno = [];
-        let foundTodayRow = false; 
+        let foundTodayRow = false;
 
         for (const riga of righeTabella) {
-            const primaCella = riga.querySelector("td"); 
+            const primaCella = riga.querySelector("td");
             if (primaCella) {
-                const testoPrimaCella = primaCella.textContent.trim();
-
-                if (testoPrimaCella === giornoOggi) {
+                const testo = primaCella.textContent.trim();
+                if (testo === giornoOggi) {
                     foundTodayRow = true;
-                    righeDelGiorno.push(riga); 
-                } 
-                else if (foundTodayRow && testoPrimaCella === "") { 
                     righeDelGiorno.push(riga);
-                } 
-                else if (foundTodayRow && testoPrimaCella !== "") { 
-                    break; 
+                } else if (foundTodayRow && testo === "") {
+                    righeDelGiorno.push(riga);
+                } else if (foundTodayRow) {
+                    break;
                 }
             }
         }
 
-        console.log(`Righe trovate per il giorno ${giornoOggi}:`, righeDelGiorno.length, righeDelGiorno);
-        if (righeDelGiorno.length === 0) {
-            console.warn("⚠️ Nessuna riga trovata per il giorno corrente.");
-            return;
-        }
-
         const badgeList = [];
-
         for (const riga of righeDelGiorno) {
-            const possibleBadgeElements = riga.querySelectorAll("span[class*='badge-success'], span[class*='badge-danger'], div[class*='badge-success'], div[class*='badge-danger']");
-            
-            possibleBadgeElements.forEach(badge => {
-                const orarioTesto = badge.textContent.trim();
-                const tipo = orarioTesto.startsWith("E ") ? "E" : (orarioTesto.startsWith("U ") ? "U" : null);
-                
-                if (tipo) {
-                    const orario = orarioTesto.slice(2); 
-                    if (orario.match(/^\d{2}:\d{2}$/)) {
-                         badgeList.push({
-                            tipo: tipo,
-                            orario: orario,
-                            originalElement: badge
-                        });
-                    } else {
-                        console.warn(`[DEBUG] Rilevato testo che inizia con E/U ma orario non valido: "${orarioTesto}" dall'elemento:`, badge);
-                    }
+            const badgeElements = riga.querySelectorAll("span[class*='badge-'], div[class*='badge-']");
+            badgeElements.forEach(badge => {
+                const text = badge.textContent.trim();
+                const tipo = text.startsWith("E ") ? "E" : (text.startsWith("U ") ? "U" : null);
+                if (tipo && /^\d{2}:\d{2}$/.test(text.slice(2))) {
+                    badgeList.push({ tipo, orario: text.slice(2), originalElement: badge });
                 }
             });
         }
-        
+
         badgeList.sort((a, b) => timeToMinutes(a.orario) - timeToMinutes(b.orario));
 
-        console.log("Badge rilevati (e ordinati cronologicamente):", badgeList);
-
-        if (badgeList.length === 0) {
-            console.warn("⚠️ Nessun badge E/U trovato per il giorno corrente.");
-            return;
-        }
+        if (!badgeList.length) return;
 
         const entrataInizialeObj = badgeList.find(b => b.tipo === "E");
-        if (!entrataInizialeObj) {
-            console.warn("⚠️ Nessuna timbratura di ENTRATA ('E') trovata.");
-            return;
-        }
-        const entrataIniziale = entrataInizialeObj.orario;
-        console.log(`Entrata iniziale rilevata: ${entrataIniziale}`);
+        if (!entrataInizialeObj) return;
 
+        const entrataIniziale = entrataInizialeObj.orario;
         let pausaInizio = null;
         let pausaFine = null;
         let lastUIndex = -1;
@@ -126,8 +97,6 @@
                 break;
             }
         }
-        
-        console.log(`Ultima U trovata: ${pausaInizio ? pausaInizio : 'Nessuna'}`);
 
         if (pausaInizio) {
             for (let j = lastUIndex + 1; j < badgeList.length; j++) {
@@ -137,114 +106,76 @@
                 }
             }
         }
-        console.log(`Prima E dopo l'ultima U: ${pausaFine ? pausaFine : 'Nessuna'}`);
 
-        // Minuti lavorativi base (7 ore e 12 minuti = 432 minuti)
-        let minutiLavorativiBase = 432; 
-        let pausaConsiderata = 0; // Minuti di pausa che verranno effettivamente inclusi nel calcolo
-
-        // Logica per la pausa predefinita di 10 minuti
-        const PAUSA_MINIMA_PREDEFINITA = 10; // 10 minuti di pausa predefinita
+        const PAUSA_MINIMA = 10;
+        let pausaConsiderata = PAUSA_MINIMA;
 
         if (pausaInizio && pausaFine) {
-            const minutiPausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
-            console.log(`Minuti di pausa calcolati (reali): ${minutiPausaReale}`);
-
-            // Se la pausa reale è valida (tra 1 e 179 minuti)
-            if (minutiPausaReale > 0 && minutiPausaReale < 180) {
-                // Prende il massimo tra la pausa reale e la pausa minima predefinita
-                pausaConsiderata = Math.max(PAUSA_MINIMA_PREDEFINITA, minutiPausaReale);
-                console.log(`Pausa considerata: ${pausaConsiderata} minuti (max tra reale e predefinita).`);
-            } else {
-                // Se la pausa reale non è valida (es. negativa o troppo lunga), usa la pausa minima predefinita
-                pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
-                console.log(`Pausa reale non valida, usando pausa predefinita: ${pausaConsiderata} minuti.`);
+            const pausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
+            if (pausaReale > 0 && pausaReale < 180) {
+                pausaConsiderata = Math.max(PAUSA_MINIMA, pausaReale);
             }
-        } else {
-            // Se non ci sono timbrature di pausa (U-E), usa la pausa minima predefinita
-            pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
-            console.log(`Nessuna pausa U-E valida trovata, usando pausa predefinita: ${pausaConsiderata} minuti.`);
         }
-        
-        // Calcola i minuti lavorativi totali aggiungendo la pausa considerata
-        const minutiLavorativiTotali = minutiLavorativiBase + pausaConsiderata;
 
-        const entrataInizialeMinuti = timeToMinutes(entrataIniziale);
-        const uscitaPrevistaMinuti = entrataInizialeMinuti + minutiLavorativiTotali;
-        const uscitaPrevista = minutesToTime(uscitaPrevistaMinuti);
-
-        console.log(`Calcolo finale: ${entrataIniziale} (entrata) + ${minutiLavorativiTotali} minuti (lavoro base + pausa) = ${uscitaPrevista}`);
+        const minutiTotali = 432 + pausaConsiderata;
+        const uscitaPrevista = minutesToTime(timeToMinutes(entrataIniziale) + minutiTotali);
 
         const celle = righeDelGiorno[0].querySelectorAll("td");
         if (celle.length >= 8) {
-            const cellaOrario = celle[7]; 
-            cellaOrario.textContent = uscitaPrevista;
-            cellaOrario.style.color = "blue"; 
-            cellaOrario.style.fontWeight = "bold"; 
-            // Aggiorna il tooltip per riflettere la pausa effettivamente considerata
-            cellaOrario.title = `Entrata: ${entrataIniziale} + ${minutiLavorativiTotali} minuti (${pausaConsiderata} pausa inclusa)`;
-            console.log(`Orario ${uscitaPrevista} inserito nella cella.`);
-        } else {
-            console.warn("⚠️ Non ci sono abbastanza celle nella prima riga per inserire l'orario di uscita.");
+            celle[7].textContent = uscitaPrevista;
+            celle[7].style.color = "blue";
+            celle[7].style.fontWeight = "bold";
+            celle[7].title = `Entrata: ${entrataIniziale} + ${minutiTotali} minuti (${pausaConsiderata} pausa)`;
         }
-        console.log("--- Fine calcolo per oggi ---");
     }
-
-    // --- UI - Gestione del Bottone ---
 
     let calcolaButton = null;
 
-    const waitForPageElements = setInterval(() => {
-        const cartellinoTitle = document.querySelector('div.title-label');
-        const isCartellinoPage = cartellinoTitle && cartellinoTitle.textContent.includes('Cartellino');
-        const timeTable = document.querySelector('table');
-
-        if (isCartellinoPage && timeTable) {
-            clearInterval(waitForPageElements); 
-
-            calcolaButton = document.createElement("button");
-            calcolaButton.textContent = "Ora del Giorno"; // MODIFICA QUI: TESTO DEL BOTTONE
-            
-            Object.assign(calcolaButton.style, {
-                padding: "10px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "bold",
-                marginLeft: "10px" 
-            });
-            
-            calcolaButton.setAttribute('type', 'button'); 
-            calcolaButton.onclick = calcolaPerOggi;
-            
-            document.body.appendChild(calcolaButton);
-            console.log("Bottone 'Ora del Giorno' creato e aggiunto temporaneamente al body (solo su pagina Cartellino).");
-
-            startPositioningButton();
-        }
-    }, 500); 
-
-    function startPositioningButton() {
-        const waitForUpdateButton = setInterval(() => {
-            const updateButton = document.getElementById("firstFocus");
-            
-            if (calcolaButton && updateButton) {
-                clearInterval(waitForUpdateButton); 
-
-                if (calcolaButton.parentNode) {
-                    calcolaButton.parentNode.removeChild(calcolaButton);
-                }
-
-                updateButton.parentNode.insertBefore(calcolaButton, updateButton.nextSibling);
-                console.log("Bottone 'Ora del Giorno' riposizionato accanto al bottone Aggiorna.");
-                
-                calcolaButton.onclick = calcolaPerOggi;
-                console.log("Evento onclick ricollegato al bottone dopo il riposizionamento.");
+    function waitUntil(conditionFn, callback, timeout = 10000, interval = 300) {
+        const start = Date.now();
+        const handle = setInterval(() => {
+            if (conditionFn()) {
+                clearInterval(handle);
+                callback();
+            } else if (Date.now() - start > timeout) {
+                clearInterval(handle);
+                console.warn("⏱ Timeout in attesa degli elementi della pagina.");
             }
-        }, 500); 
+        }, interval);
     }
+
+    waitUntil(() => {
+        const title = document.querySelector('div.title-label');
+        const table = document.querySelector('table');
+        return title && title.textContent.includes('Cartellino') && table;
+    }, () => {
+        calcolaButton = document.createElement("button");
+        calcolaButton.textContent = "Ora del Giorno";
+        Object.assign(calcolaButton.style, {
+            padding: "10px",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "bold",
+            marginLeft: "10px"
+        });
+        calcolaButton.type = "button";
+        calcolaButton.onclick = calcolaPerOggi;
+
+        document.body.appendChild(calcolaButton);
+
+        waitUntil(() => document.getElementById("firstFocus"), () => {
+            const updateBtn = document.getElementById("firstFocus");
+            if (updateBtn && updateBtn.parentNode) {
+                if (calcolaButton.parentNode) {
+                    calcolaButton.remove();
+                }
+                updateBtn.parentNode.insertBefore(calcolaButton, updateBtn.nextSibling);
+            }
+        });
+    });
 
 })();
