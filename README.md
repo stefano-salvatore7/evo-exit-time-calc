@@ -1,6 +1,6 @@
 # EVO Exit Time Calculator
 
-Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `personale-unibo.hrgpi.it`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature e dell'eventuale pausa.
+Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature e dell'eventuale pausa.
 
 **(Versione Script: 1.22)**
 
@@ -15,29 +15,55 @@ Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione
 
 ## Installazione e Aggiornamenti Automatici
 
-Per installare e assicurarti che lo script si aggiorni automaticamente dal repository GitHub, segui questi passaggi:
+Per installare lo script e assicurarti che si aggiorni automaticamente dal repository GitHub, segui i passaggi per il tuo browser:
 
-1.  **Installa un'estensione per Userscript:** Se non l'hai già fatto, installa un'estensione nel tuo browser che supporti gli Userscript. Le più popolari e consigliate sono:
-    * [**Tampermonkey**](https://www.tampermonkey.net/) (Consigliato per Chrome, Edge, Safari, Opera, Firefox)
-    * [**Greasemonkey**](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) (Per Firefox)
+### 1. Installare l'estensione Tampermonkey
 
-2.  **Per utenti Edge (Importante!):**
-    * Apri Edge e digita `edge://extensions/` nella barra degli indirizzi.
-    * Attiva la **"Modalità sviluppatore"** (solitamente un interruttore in alto a destra). Potrebbe comparire un avviso di sicurezza nella parte superiore del browser; è normale quando si usa questa modalità.
+Se non l'hai già fatto, installa l'estensione Tampermonkey nel tuo browser:
 
-3.  **Installa lo Script per gli Aggiornamenti Automatici:**
-    Clicca sul seguente link. L'estensione Userscript che hai installato (es. Tampermonkey) ti reindirizzerà a una pagina di installazione/conferma. **È fondamentale installare lo script tramite questo link RAW diretto** affinché l'estensione possa monitorare gli aggiornamenti futuri.
+* **[Tampermonkey per Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)**
+* **[Tampermonkey per Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpbldmmepgdkmfapfmccmocdkf)**
+* **[Tampermonkey per Firefox](https://addons.mozilla.org/it/firefox/addon/tampermonkey/)** (o Greasemonkey se preferisci)
 
-    [**Clicca qui per installare/aggiornare EVO Exit Time Calculator**](https://raw.githubusercontent.com/stefano-salvatore7/evo-exit-time-calc/main/evo-exit-time-calculator.user.js)
+### 2. Configurazione del Browser (Importante!)
 
-    * Dopo aver cliccato, Tampermonkey (o Greasemonkey) ti mostrerà il codice dello script e ti chiederà di **"Installa"** (se è la prima volta) o **"Aggiorna"** (se stai aggiornando una versione precedente). Conferma l'azione.
+Per consentire l'esecuzione corretta dello script, potrebbero essere necessari alcuni passaggi di configurazione nel tuo browser:
 
-4.  **Configurazione Aggiornamenti Automatici (Tampermonkey):**
-    Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automaticamente gli aggiornamenti. Puoi verificare le impostazioni:
-    * Clicca sull'icona di Tampermonkey nel tuo browser e seleziona **"Dashboard"**.
-    * Trova "EVO Exit Time Calculator" nell'elenco.
-    * Verifica che la casella "Controlla aggiornamenti" sia spuntata. L'URL di aggiornamento dovrebbe essere corretto (quello RAW che hai usato per l'installazione).
-    * Tampermonkey controllerà periodicamente il repository per nuove versioni e ti notificherà se è disponibile un aggiornamento. Puoi anche forzare un controllo cliccando sull'icona delle frecce circolari (Aggiorna) accanto al nome dello script.
+#### Per Google Chrome:
+
+1.  Apri Chrome e digita `chrome://extensions/` nella barra degli indirizzi, poi premi Invio.
+2.  In alto a destra, attiva la **"Modalità sviluppatore"** (interruttore).
+3.  Individua Tampermonkey nell'elenco delle estensioni.
+4.  Clicca su **"Dettagli"** sotto Tampermonkey.
+5.  Assicurati che l'opzione **"Consenti script utente"** sia attiva.
+6.  Assicurati che l'opzione **"Consenti l'accesso agli URL del file"** sia attiva (sebbene non strettamente necessaria per questo script, a volte risolve problemi generici).
+
+#### Per Microsoft Edge:
+
+1.  Apri Edge e digita `edge://extensions/` nella barra degli indirizzi, poi premi Invio.
+2.  In alto a destra, attiva la **"Modalità sviluppatore"** (interruttore). Potrebbe comparire un avviso di sicurezza nella parte superiore del browser; è normale quando si usa questa modalità.
+3.  Individua Tampermonkey nell'elenco delle estensioni.
+4.  Clicca su **"Dettagli"** sotto Tampermonkey.
+5.  Assicurati che l'opzione **"Consenti estensioni da altri archivi"** (o "Allow extensions from other stores", se il browser è in inglese) sia attiva.
+
+### 3. Installazione dello Script per Aggiornamenti Automatici
+
+Ora che il tuo browser è configurato, puoi installare lo script:
+
+Clicca sul seguente link. L'estensione Userscript che hai installato (es. Tampermonkey) ti reindirizzerà a una pagina di installazione/conferma. **È fondamentale installare lo script tramite questo link RAW diretto** affinché l'estensione possa monitorare gli aggiornamenti futuri.
+
+[**Clicca qui per installare/aggiornare EVO Exit Time Calculator**](https://raw.githubusercontent.com/stefano-salvatore7/evo-exit-time-calc/main/evo-exit-time-calculator.user.js)
+
+* Dopo aver cliccato, Tampermonkey (o Greasemonkey) ti mostrerà il codice dello script e ti chiederà di **"Installa"** (se è la prima volta) o **"Aggiorna"** (se stai aggiornando una versione precedente). Conferma l'azione.
+
+### 4. Verifica Aggiornamenti Automatici (Tampermonkey)
+
+Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automaticamente gli aggiornamenti. Puoi verificare le impostazioni:
+
+* Clicca sull'icona di Tampermonkey nel tuo browser e seleziona **"Dashboard"**.
+* Trova "EVO Exit Time Calculator" nell'elenco.
+* Verifica che la casella "Controlla aggiornamenti" sia spuntata. L'URL di aggiornamento dovrebbe essere corretto (quello RAW che hai usato per l'installazione).
+* Tampermonkey controllerà periodicamente il repository per nuove versioni e ti notificherà se è disponibile un aggiornamento. Puoi anche forzare un controllo cliccando sull'icona delle frecce circolari (Aggiorna) accanto al nome dello script.
 
 ## Utilizzo
 
