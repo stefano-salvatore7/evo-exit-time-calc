@@ -2,14 +2,14 @@
 
 Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature e dell'eventuale pausa.
 
-**(Versione Script: 1.22)**
+**(Versione Script: 1.24)**
 
 ## Caratteristiche
 
-* **Calcolo Orario di Uscita:** Determina l'orario di uscita necessario per completare le 7 ore e 12 minuti di lavoro.
+* **Calcolo Orario di Uscita (7h 12m):** Determina l'orario di uscita necessario per completare le 7 ore e 12 minuti di lavoro **nette**, a cui viene aggiunta la pausa.
 * **Gestione Timbrature Flessibile:** Supporta sia il formato standard `E HH:mm` / `U HH:mm` che il formato "Telelavoro" `E[HH:mm]` / `U[HH:mm]`.
 * **Gestione Pausa Pranzo:** Calcola e include nel totale lavorato la durata della pausa pranzo (ultima "U" seguita dalla prima "E"). Aggiunge una pausa predefinita di 10 minuti se non rilevata o troppo breve (utilizza il valore maggiore tra la pausa effettiva e i 10 minuti).
-* **Iniezione Diretta:** Visualizza l'orario calcolato direttamente nella tabella delle timbrature del giorno.
+* **Iniezione Diretta e Sovrascrittura con Stile:** Inserisce l'orario calcolato direttamente nella tabella delle timbrature del giorno, **visualizzandolo come una "pillola" con sfondo blu e testo bianco**, sovrascrivendo qualsiasi orario precedentemente visualizzato da questo script o dall'EVO Exit Time Calculator (6h 11m).
 * **Posizionamento Intuitivo:** Il bottone "**Ora del Giorno**" è posizionato strategicamente accanto al bottone "Aggiorna".
 * **Apparizione Condizionale:** Il bottone appare **esclusivamente sulla pagina "Cartellino"** per garantire il corretto funzionamento e evitare la comparsa su altre sezioni del portale EVO.
 
@@ -51,8 +51,6 @@ Per consentire l'esecuzione corretta dello script, potrebbero essere necessari a
 
 Ora che il tuo browser è configurato, puoi installare lo script:
 
-Clicca sul seguente link. L'estensione Userscript che hai installato (es. Tampermonkey) ti reindirizzerà a una pagina di installazione/conferma. **È fondamentale installare lo script tramite questo link RAW diretto** affinché l'estensione possa monitorare gli aggiornamenti futuri.
-
 [**Clicca qui per installare/aggiornare EVO Exit Time Calculator**](https://raw.githubusercontent.com/stefano-salvatore7/evo-exit-time-calc/main/evo-exit-time-calculator.user.js)
 
 * Dopo aver cliccato, Tampermonkey (o Greasemonkey) ti mostrerà il codice dello script e ti chiederà di **"Installa"** (se è la prima volta) o **"Aggiorna"** (se stai aggiornando una versione precedente). Conferma l'azione.
@@ -71,8 +69,8 @@ Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automati
 Una volta installato, lo script si attiverà automaticamente quando visiterai la pagina delle timbrature EVO su `https://personale-unibo.hrgpi.it/*`.
 
 1.  Naviga alla pagina delle timbrature (assicurati che sia la pagina "Cartellino").
-2.  Trova il bottone "**Ora del Giorno**" posizionato accanto al bottone "Aggiorna".
-3.  Clicca su "**Ora del Giorno**" per visualizzare l'orario di uscita calcolato per il giorno corrente nella tabella.
+2.  Trova il bottone "**Ora del Giorno**" posizionato strategicamente accanto al bottone "Aggiorna".
+3.  Clicca su "**Ora del Giorno**" per visualizzare l'orario di uscita calcolato per il giorno corrente nella tabella. L'orario apparirà in una "pillola" blu. Se un orario calcolato per 6h 11m era presente, verrà sostituito da questo.
 
 ## Contributi (Facoltativo)
 
@@ -84,4 +82,4 @@ Per un riepilogo delle modifiche e delle funzionalità introdotte in ogni versio
 
 ---
 
-*Sviluppato con l'assistenza di Gemini.*
+*Sviluppato da Stefano con l'assistenza di Gemini.*
