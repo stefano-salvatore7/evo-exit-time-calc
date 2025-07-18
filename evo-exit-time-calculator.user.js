@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.21
+// @version       1.22 // Aggiornata per supportare formato Telelavoro E[HH:mm] / U[HH:mm]
 // @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
 // @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
 // @match         https://personale-unibo.hrgpi.it/*
@@ -40,7 +40,7 @@
         event.stopPropagation();
         event.preventDefault(); 
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.21) ---");
+        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.22) ---"); // Modificato versione
         
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate()); 
@@ -81,19 +81,29 @@
             
             possibleBadgeElements.forEach(badge => {
                 const orarioTesto = badge.textContent.trim();
-                const tipo = orarioTesto.startsWith("E ") ? "E" : (orarioTesto.startsWith("U ") ? "U" : null);
+                let tipo = null;
+                let orario = null;
                 
-                if (tipo) {
-                    const orario = orarioTesto.slice(2); 
-                    if (orario.match(/^\d{2}:\d{2}$/)) {
-                         badgeList.push({
-                            tipo: tipo,
-                            orario: orario,
-                            originalElement: badge
-                        });
-                    } else {
-                        console.warn(`[DEBUG] Rilevato testo che inizia con E/U ma orario non valido: "${orarioTesto}" dall'elemento:`, badge);
-                    }
+                // Nuovo parsing per gestire E HH:mm e E[HH:mm]
+                const matchStandard = orarioTesto.match(/^(E|U)\s(\d{2}:\d{2})$/); // Es: "E 08:00"
+                const matchTelelavoro = orarioTesto.match(/^(E|U)\[(\d{2}:\d{2})\]$/); // Es: "E[08:00]"
+
+                if (matchStandard) {
+                    tipo = matchStandard[1];
+                    orario = matchStandard[2];
+                } else if (matchTelelavoro) {
+                    tipo = matchTelelavoro[1];
+                    orario = matchTelelavoro[2];
+                }
+                
+                if (tipo && orario) {
+                     badgeList.push({
+                        tipo: tipo,
+                        orario: orario,
+                        originalElement: badge
+                    });
+                } else {
+                    console.warn(`[DEBUG] Rilevato testo non valido per orario: "${orarioTesto}" dall'elemento:`, badge);
                 }
             });
         }
