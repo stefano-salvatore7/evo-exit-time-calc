@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.22 // Aggiornata per supportare formato Telelavoro E[HH:mm] / U[HH:mm]
+// @version       1.22
 // @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
 // @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
 // @match         https://personale-unibo.hrgpi.it/*
