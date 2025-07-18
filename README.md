@@ -21,14 +21,18 @@ Per installare e assicurarti che lo script si aggiorni automaticamente dal repos
     * [**Tampermonkey**](https://www.tampermonkey.net/) (Consigliato per Chrome, Edge, Safari, Opera, Firefox)
     * [**Greasemonkey**](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) (Per Firefox)
 
-2.  **Installa lo Script per gli Aggiornamenti Automatici:**
+2.  **Per utenti Edge (Importante!):**
+    * Apri Edge e digita `edge://extensions/` nella barra degli indirizzi.
+    * Attiva la **"Modalità sviluppatore"** (solitamente un interruttore in alto a destra). Potrebbe comparire un avviso di sicurezza nella parte superiore del browser; è normale quando si usa questa modalità.
+
+3.  **Installa lo Script per gli Aggiornamenti Automatici:**
     Clicca sul seguente link. L'estensione Userscript che hai installato (es. Tampermonkey) ti reindirizzerà a una pagina di installazione/conferma. **È fondamentale installare lo script tramite questo link RAW diretto** affinché l'estensione possa monitorare gli aggiornamenti futuri.
 
     [**Clicca qui per installare/aggiornare EVO Exit Time Calculator**](https://raw.githubusercontent.com/stefano-salvatore7/evo-exit-time-calc/main/evo-exit-time-calculator.user.js)
 
     * Dopo aver cliccato, Tampermonkey (o Greasemonkey) ti mostrerà il codice dello script e ti chiederà di **"Installa"** (se è la prima volta) o **"Aggiorna"** (se stai aggiornando una versione precedente). Conferma l'azione.
 
-3.  **Configurazione Aggiornamenti Automatici (Tampermonkey):**
+4.  **Configurazione Aggiornamenti Automatici (Tampermonkey):**
     Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automaticamente gli aggiornamenti. Puoi verificare le impostazioni:
     * Clicca sull'icona di Tampermonkey nel tuo browser e seleziona **"Dashboard"**.
     * Trova "EVO Exit Time Calculator" nell'elenco.
@@ -50,7 +54,3 @@ Se desideri contribuire a migliorare questo script, sentiti libero di aprire una
 ## Log delle Versioni
 
 Per un riepilogo delle modifiche e delle funzionalità introdotte in ogni versione dello script, consulta il file [CHANGELOG.md](CHANGELOG.md) nel repository.
-
----
-
-*Sviluppato con l'assistenza di Gemini.*
