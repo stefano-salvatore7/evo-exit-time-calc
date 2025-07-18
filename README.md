@@ -49,7 +49,3 @@ Se desideri contribuire a migliorare questo script, sentiti libero di aprire una
 ## Log delle Versioni
 
 Per un riepilogo delle modifiche e delle funzionalità introdotte in ogni versione dello script, consulta il file [CHANGELOG.md](CHANGELOG.md) nel repository.
-
----
-
-*Sviluppato con l'assistenza di Gemini.*
