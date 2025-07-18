@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.22
-// @description   Calcola l'orario di uscita su Personale Unibo (Sistema EVO), includendo la pausa tra timbrature e posiziona il bottone accanto ad "Aggiorna". Appare solo sulla pagina "Cartellino". Aggiunge una pausa predefinita di 10 minuti.
-// @author        Your Name (sostituire con il tuo nome/nickname se lo carichi su GitHub)
+// @version       1.24
+// @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO) per 7 ore e 12 minuti, includendo la pausa tra timbrature. L'orario viene visualizzato in una "pillola" blu con testo bianco. Sostituisce l'orario esistente nella cella. Il bottone appare solo sulla pagina "Cartellino" accanto ad "Aggiorna". Aggiunge una pausa predefinita di 10 minuti.
+// @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
 // @grant         none
 // ==/UserScript==
@@ -33,14 +33,14 @@
     }
 
     /**
-     * Funzione principale per calcolare l'orario di uscita previsto.
+     * Funzione principale per calcolare l'orario di uscita previsto (7h 12m).
      * @param {Event} event - L'oggetto evento del click per prevenire la propagazione.
      */
     function calcolaPerOggi(event) {
         event.stopPropagation();
         event.preventDefault(); 
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.22) ---"); // Modificato versione
+        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.24) ---"); // Modificato versione
         
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate()); 
@@ -84,9 +84,8 @@
                 let tipo = null;
                 let orario = null;
                 
-                // Nuovo parsing per gestire E HH:mm e E[HH:mm]
-                const matchStandard = orarioTesto.match(/^(E|U)\s(\d{2}:\d{2})$/); // Es: "E 08:00"
-                const matchTelelavoro = orarioTesto.match(/^(E|U)\[(\d{2}:\d{2})\]$/); // Es: "E[08:00]"
+                const matchStandard = orarioTesto.match(/^(E|U)\s(\d{2}:\d{2})$/);
+                const matchTelelavoro = orarioTesto.match(/^(E|U)\[(\d{2}:\d{2})\]$/);
 
                 if (matchStandard) {
                     tipo = matchStandard[1];
@@ -149,34 +148,26 @@
         }
         console.log(`Prima E dopo l'ultima U: ${pausaFine ? pausaFine : 'Nessuna'}`);
 
-        // Minuti lavorativi base (7 ore e 12 minuti = 432 minuti)
-        let minutiLavorativiBase = 432; 
-        let pausaConsiderata = 0; // Minuti di pausa che verranno effettivamente inclusi nel calcolo
-
-        // Logica per la pausa predefinita di 10 minuti
-        const PAUSA_MINIMA_PREDEFINITA = 10; // 10 minuti di pausa predefinita
+        let minutiLavorativiBase = 432; // 7 ore e 12 minuti
+        let pausaConsiderata = 0; 
+        const PAUSA_MINIMA_PREDEFINITA = 10; 
 
         if (pausaInizio && pausaFine) {
             const minutiPausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
             console.log(`Minuti di pausa calcolati (reali): ${minutiPausaReale}`);
 
-            // Se la pausa reale è valida (tra 1 e 179 minuti)
             if (minutiPausaReale > 0 && minutiPausaReale < 180) {
-                // Prende il massimo tra la pausa reale e la pausa minima predefinita
                 pausaConsiderata = Math.max(PAUSA_MINIMA_PREDEFINITA, minutiPausaReale);
                 console.log(`Pausa considerata: ${pausaConsiderata} minuti (max tra reale e predefinita).`);
             } else {
-                // Se la pausa reale non è valida (es. negativa o troppo lunga), usa la pausa minima predefinita
                 pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
                 console.log(`Pausa reale non valida, usando pausa predefinita: ${pausaConsiderata} minuti.`);
             }
         } else {
-            // Se non ci sono timbrature di pausa (U-E), usa la pausa minima predefinita
             pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
             console.log(`Nessuna pausa U-E valida trovata, usando pausa predefinita: ${pausaConsiderata} minuti.`);
         }
         
-        // Calcola i minuti lavorativi totali aggiungendo la pausa considerata
         const minutiLavorativiTotali = minutiLavorativiBase + pausaConsiderata;
 
         const entrataInizialeMinuti = timeToMinutes(entrataIniziale);
@@ -188,12 +179,23 @@
         const celle = righeDelGiorno[0].querySelectorAll("td");
         if (celle.length >= 8) {
             const cellaOrario = celle[7]; 
-            cellaOrario.textContent = uscitaPrevista;
-            cellaOrario.style.color = "blue"; 
-            cellaOrario.style.fontWeight = "bold"; 
-            // Aggiorna il tooltip per riflettere la pausa effettivamente considerata
+            // MODIFICA QUI: Crea un <span> e applica gli stili del "bottone"
+            cellaOrario.innerHTML = ''; // Pulisci la cella
+            const displaySpan = document.createElement('span');
+            displaySpan.textContent = uscitaPrevista;
+            
+            Object.assign(displaySpan.style, {
+                backgroundColor: "#007bff", // Sfondo blu
+                color: "white",             // Testo bianco
+                padding: "5px 10px",        // Padding
+                borderRadius: "4px",        // Bordi arrotondati
+                fontWeight: "bold",
+                display: "inline-block"     // Permette padding e margini
+            });
+
+            cellaOrario.appendChild(displaySpan);
             cellaOrario.title = `Entrata: ${entrataIniziale} + ${minutiLavorativiTotali} minuti (${pausaConsiderata} pausa inclusa)`;
-            console.log(`Orario ${uscitaPrevista} inserito nella cella.`);
+            console.log(`Orario ${uscitaPrevista} inserito nella cella con stile "bottone" blu.`);
         } else {
             console.warn("⚠️ Non ci sono abbastanza celle nella prima riga per inserire l'orario di uscita.");
         }
