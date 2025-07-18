@@ -36,7 +36,7 @@ Per consentire l'esecuzione corretta dello script, potrebbero essere necessari a
 3.  Individua Tampermonkey nell'elenco delle estensioni.
 4.  Clicca su **"Dettagli"** sotto Tampermonkey.
 5.  Assicurati che l'opzione **"Consenti script utente"** sia attiva.
-6.  Assicurati che l'opzione **"Consenti l'accesso agli URL del file"** sia attiva (sebbene non strettamente necessaria per questo script, a volte risolve problemi generici).
+6.  Assicurati che l'opzione **"Consenti l'accesso agli URL del file"** sia attiva.
 
 #### Per Microsoft Edge:
 
@@ -45,6 +45,7 @@ Per consentire l'esecuzione corretta dello script, potrebbero essere necessari a
 3.  Individua Tampermonkey nell'elenco delle estensioni.
 4.  Clicca su **"Dettagli"** sotto Tampermonkey.
 5.  Assicurati che l'opzione **"Consenti estensioni da altri archivi"** (o "Allow extensions from other stores", se il browser è in inglese) sia attiva.
+6.  **Assicurati che l'opzione "Consenti l'accesso agli URL del file" sia attiva.**
 
 ### 3. Installazione dello Script per Aggiornamenti Automatici
 
@@ -80,3 +81,7 @@ Se desideri contribuire a migliorare questo script, sentiti libero di aprire una
 ## Log delle Versioni
 
 Per un riepilogo delle modifiche e delle funzionalità introdotte in ogni versione dello script, consulta il file [CHANGELOG.md](CHANGELOG.md) nel repository.
+
+---
+
+*Sviluppato con l'assistenza di Gemini.*
