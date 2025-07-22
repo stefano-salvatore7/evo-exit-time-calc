@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator (Unificato)
 // @namespace     https://unibo.it/
-// @version       2.0
+// @version       2.1
 // @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO) per giornate da 7h 12m e 6h 1m. Permette di selezionare la fascia oraria di ingresso (7:30, 8:00, 8:30) che viene usata come limite inferiore per l'ingresso effettivo in entrambi i calcoli. La preferenza della fascia viene salvata. Include la pausa tra timbrature o 10 minuti predefiniti. Appare solo sulla pagina "Cartellino".
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
@@ -26,7 +26,7 @@
 
     // --- Colori per i bottoni e le pillole ---
     const COLOR_ORA_DEL_GIORNO = "#28a745"; // Verde
-    const COLOR_SEI_ORE_UNDICI = "#8A2BE2"; // Viola (colore richiesto)
+    const COLOR_SEI_ORE_UNDICI = "#8A2BE2"; // Viola
 
     /**
      * Converte una stringa oraria (HH:mm) in minuti totali dalla mezzanotte.
