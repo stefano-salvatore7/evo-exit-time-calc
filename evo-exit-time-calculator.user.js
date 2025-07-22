@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       1.24
-// @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO) per 7 ore e 12 minuti, includendo la pausa tra timbrature. L'orario viene visualizzato in una "pillola" blu con testo bianco. Sostituisce l'orario esistente nella cella. Il bottone appare solo sulla pagina "Cartellino" accanto ad "Aggiorna". Aggiunge una pausa predefinita di 10 minuti.
+// @version       1.25
+// @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO) per 7 ore e 12 minuti, includendo la pausa tra timbrature. L'orario viene visualizzato in una "pillola" blu con testo bianco. Sostituisce l'orario esistente nella cella. Il bottone appare solo sulla pagina "Cartellino" accanto ad "Aggiorna". Aggiunge una pausa predefinita di 10 minuti. Se l'ingresso è antecedente alle 7:30, calcola comunque l'entrata dalle 7:30.
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
 // @grant         none
@@ -38,32 +38,32 @@
      */
     function calcolaPerOggi(event) {
         event.stopPropagation();
-        event.preventDefault(); 
+        event.preventDefault();
 
-        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.24) ---"); // Modificato versione
+        console.log("--- Avvio calcolo per oggi (EVO Exit Time Calculator v1.25) ---"); // Modificato versione
         
         const oggi = new Date();
-        const giornoOggi = String(oggi.getDate()); 
+        const giornoOggi = String(oggi.getDate());
         console.log(`Giorno corrente: ${giornoOggi}`);
 
         const righeTabella = document.querySelectorAll('table tr');
         let righeDelGiorno = [];
-        let foundTodayRow = false; 
+        let foundTodayRow = false;
 
         for (const riga of righeTabella) {
-            const primaCella = riga.querySelector("td"); 
+            const primaCella = riga.querySelector("td");
             if (primaCella) {
                 const testoPrimaCella = primaCella.textContent.trim();
 
                 if (testoPrimaCella === giornoOggi) {
                     foundTodayRow = true;
-                    righeDelGiorno.push(riga); 
-                } 
-                else if (foundTodayRow && testoPrimaCella === "") { 
                     righeDelGiorno.push(riga);
-                } 
-                else if (foundTodayRow && testoPrimaCella !== "") { 
-                    break; 
+                }
+                else if (foundTodayRow && testoPrimaCella === "") {
+                    righeDelGiorno.push(riga);
+                }
+                else if (foundTodayRow && testoPrimaCella !== "") {
+                    break;
                 }
             }
         }
@@ -96,7 +96,7 @@
                 }
                 
                 if (tipo && orario) {
-                     badgeList.push({
+                    badgeList.push({
                         tipo: tipo,
                         orario: orario,
                         originalElement: badge
@@ -121,8 +121,21 @@
             console.warn("⚠️ Nessuna timbratura di ENTRATA ('E') trovata.");
             return;
         }
-        const entrataIniziale = entrataInizialeObj.orario;
-        console.log(`Entrata iniziale rilevata: ${entrataIniziale}`);
+        
+        let entrataInizialeEffettiva = entrataInizialeObj.orario;
+        let entrataInizialeConsiderataMinuti = timeToMinutes(entrataInizialeEffettiva);
+        const LIMITE_INGRESSO_MATTINA_MINUTI = timeToMinutes("07:30");
+
+        // Nuova logica: se l'entrata è prima delle 7:30, considerala dalle 7:30
+        if (entrataInizialeConsiderataMinuti < LIMITE_INGRESSO_MATTINA_MINUTI) {
+            console.log(`Entrata (${entrataInizialeEffettiva}) antecedente alle 07:30. Sarà considerata dalle 07:30.`);
+            entrataInizialeConsiderataMinuti = LIMITE_INGRESSO_MATTINA_MINUTI;
+        } else {
+             console.log(`Entrata iniziale rilevata: ${entrataInizialeEffettiva}`);
+        }
+        
+        const entrataInizialeVisualizzata = minutesToTime(entrataInizialeConsiderataMinuti);
+
 
         let pausaInizio = null;
         let pausaFine = null;
@@ -149,19 +162,19 @@
         console.log(`Prima E dopo l'ultima U: ${pausaFine ? pausaFine : 'Nessuna'}`);
 
         let minutiLavorativiBase = 432; // 7 ore e 12 minuti
-        let pausaConsiderata = 0; 
-        const PAUSA_MINIMA_PREDEFINITA = 10; 
+        let pausaConsiderata = 0;
+        const PAUSA_MINIMA_PREDEFINITA = 10;
 
         if (pausaInizio && pausaFine) {
             const minutiPausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
             console.log(`Minuti di pausa calcolati (reali): ${minutiPausaReale}`);
 
-            if (minutiPausaReale > 0 && minutiPausaReale < 180) {
+            if (minutiPausaReale > 0 && minutiPausaReale < 180) { // Limita la pausa massima considerata per evitare errori di timbratura
                 pausaConsiderata = Math.max(PAUSA_MINIMA_PREDEFINITA, minutiPausaReale);
                 console.log(`Pausa considerata: ${pausaConsiderata} minuti (max tra reale e predefinita).`);
             } else {
                 pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
-                console.log(`Pausa reale non valida, usando pausa predefinita: ${pausaConsiderata} minuti.`);
+                console.log(`Pausa reale non valida o troppo lunga, usando pausa predefinita: ${pausaConsiderata} minuti.`);
             }
         } else {
             pausaConsiderata = PAUSA_MINIMA_PREDEFINITA;
@@ -170,31 +183,29 @@
         
         const minutiLavorativiTotali = minutiLavorativiBase + pausaConsiderata;
 
-        const entrataInizialeMinuti = timeToMinutes(entrataIniziale);
-        const uscitaPrevistaMinuti = entrataInizialeMinuti + minutiLavorativiTotali;
+        const uscitaPrevistaMinuti = entrataInizialeConsiderataMinuti + minutiLavorativiTotali;
         const uscitaPrevista = minutesToTime(uscitaPrevistaMinuti);
 
-        console.log(`Calcolo finale: ${entrataIniziale} (entrata) + ${minutiLavorativiTotali} minuti (lavoro base + pausa) = ${uscitaPrevista}`);
+        console.log(`Calcolo finale: ${entrataInizialeVisualizzata} (entrata considerata) + ${minutiLavorativiTotali} minuti (lavoro base + pausa) = ${uscitaPrevista}`);
 
         const celle = righeDelGiorno[0].querySelectorAll("td");
         if (celle.length >= 8) {
-            const cellaOrario = celle[7]; 
-            // MODIFICA QUI: Crea un <span> e applica gli stili del "bottone"
-            cellaOrario.innerHTML = ''; // Pulisci la cella
+            const cellaOrario = celle[7];
+            cellaOrario.innerHTML = '';
             const displaySpan = document.createElement('span');
             displaySpan.textContent = uscitaPrevista;
             
             Object.assign(displaySpan.style, {
-                backgroundColor: "#007bff", // Sfondo blu
-                color: "white",             // Testo bianco
-                padding: "5px 10px",        // Padding
-                borderRadius: "4px",        // Bordi arrotondati
+                backgroundColor: "#007bff",
+                color: "white",
+                padding: "5px 10px",
+                borderRadius: "4px",
                 fontWeight: "bold",
-                display: "inline-block"     // Permette padding e margini
+                display: "inline-block"
             });
 
             cellaOrario.appendChild(displaySpan);
-            cellaOrario.title = `Entrata: ${entrataIniziale} + ${minutiLavorativiTotali} minuti (${pausaConsiderata} pausa inclusa)`;
+            cellaOrario.title = `Entrata effettiva: ${entrataInizialeEffettiva} | Entrata considerata: ${entrataInizialeVisualizzata} | ${minutiLavorativiTotali} minuti (${pausaConsiderata} pausa inclusa)`;
             console.log(`Orario ${uscitaPrevista} inserito nella cella con stile "bottone" blu.`);
         } else {
             console.warn("⚠️ Non ci sono abbastanza celle nella prima riga per inserire l'orario di uscita.");
@@ -212,10 +223,10 @@
         const timeTable = document.querySelector('table');
 
         if (isCartellinoPage && timeTable) {
-            clearInterval(waitForPageElements); 
+            clearInterval(waitForPageElements);
 
             calcolaButton = document.createElement("button");
-            calcolaButton.textContent = "Ora del Giorno"; 
+            calcolaButton.textContent = "Ora del Giorno";
             
             Object.assign(calcolaButton.style, {
                 padding: "10px",
@@ -226,10 +237,10 @@
                 cursor: "pointer",
                 fontSize: "14px",
                 fontWeight: "bold",
-                marginLeft: "10px" 
+                marginLeft: "10px"
             });
             
-            calcolaButton.setAttribute('type', 'button'); 
+            calcolaButton.setAttribute('type', 'button');
             calcolaButton.onclick = calcolaPerOggi;
             
             document.body.appendChild(calcolaButton);
@@ -237,14 +248,14 @@
 
             startPositioningButton();
         }
-    }, 500); 
+    }, 500);
 
     function startPositioningButton() {
         const waitForUpdateButton = setInterval(() => {
             const updateButton = document.getElementById("firstFocus");
             
             if (calcolaButton && updateButton) {
-                clearInterval(waitForUpdateButton); 
+                clearInterval(waitForUpdateButton);
 
                 if (calcolaButton.parentNode) {
                     calcolaButton.parentNode.removeChild(calcolaButton);
@@ -256,7 +267,7 @@
                 calcolaButton.onclick = calcolaPerOggi;
                 console.log("Evento onclick ricollegato al bottone dopo il riposizionamento.");
             }
-        }, 500); 
+        }, 500);
     }
 
 })();
