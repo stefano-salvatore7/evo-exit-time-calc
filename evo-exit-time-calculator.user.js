@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator (Unificato)
 // @namespace     https://unibo.it/
-// @version       2.3
+// @version       2.4
 // @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO) per giornate da 7h 12m e 6h 1m. Permette di selezionare la fascia oraria di ingresso (7:30, 8:00, 8:30) che viene usata come limite inferiore per l'ingresso effettivo in entrambi i calcoli. La preferenza della fascia viene salvata. Include la pausa tra timbrature o 10 minuti predefiniti. Appare solo sulla pagina "Cartellino".
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
@@ -27,6 +27,28 @@
     // --- Colori per i bottoni e le pillole ---
     const COLOR_ORA_DEL_GIORNO = "#bb2e29"; // Dusty Red
     const COLOR_SEI_ORE_UNDICI = "#c85753"; // Cedar Chest
+
+    /**
+     * Inietta il CSS per importare e applicare il font Open Sans.
+     */
+    function injectOpenSans() {
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = `
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+            /* Applica Open Sans a tutti gli elementi nel container dei nostri pulsanti e al selettore */
+            #fasciaOrariaSelector,
+            #fasciaOrariaSelector option,
+            .custom-button-container button,
+            .custom-button-container select,
+            .custom-exit-time-pill {
+                font-family: 'Open Sans', sans-serif !important;
+            }
+        `;
+        document.head.appendChild(style);
+        console.log("Font Open Sans iniettato.");
+    }
 
     /**
      * Converte una stringa oraria (HH:mm) in minuti totali dalla mezzanotte.
@@ -58,7 +80,7 @@
      */
     function calcolaOrarioDiUscita(fasciaSelezionataKey, minutiLavorativiNetti, displayColor, calcoloTipo) {
         const limiteIngressoMinuti = timeToMinutes(FASCE_ORARIE[fasciaSelezionataKey]);
-        console.log(`--- Avvio calcolo (${calcoloTipo} - Unificato v2.1). Fascia selezionata: ${fasciaSelezionataKey}. Limite ingresso: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
+        console.log(`--- Avvio calcolo (${calcoloTipo} - Unificato v2.4). Fascia selezionata: ${fasciaSelezionataKey}. Limite ingresso: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
 
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate());
@@ -203,6 +225,7 @@
             cellaOrario.innerHTML = '';
             const displaySpan = document.createElement('span');
             displaySpan.textContent = uscitaPrevista;
+            displaySpan.classList.add('custom-exit-time-pill'); // Aggiunto una classe per il font
 
             Object.assign(displaySpan.style, {
                 backgroundColor: displayColor,
@@ -236,12 +259,14 @@
 
         if (isCartellinoPage && timeTable && updateButton) {
             clearInterval(waitForPageElements);
+            injectOpenSans(); // Inietta il font una volta che la pagina è pronta
 
             // Trova il div contenitore dei bottoni principali per il posizionamento
             const existingButtonsDiv = updateButton.closest('.row.buttons, div.row.mb-2');
 
             // Crea il contenitore per i nostri elementi
             const customButtonContainer = document.createElement('div');
+            customButtonContainer.classList.add('custom-button-container'); // Aggiunto una classe per il font
             Object.assign(customButtonContainer.style, {
                 display: 'flex',
                 alignItems: 'center',
