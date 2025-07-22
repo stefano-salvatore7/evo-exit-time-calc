@@ -4,6 +4,37 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 
 ---
 
+## **Versione 2.4**
+* **Data di Rilascio:** 22 Luglio 2025
+* **Autore:** Stefano
+* **Modifiche:**
+    * **Font Personalizzato:** Introdotto il supporto per il font **"Open Sans"** di Google Fonts. Il font viene ora applicato a tutti gli elementi UI generati dallo script (selettore della fascia, bottoni "Ora del Giorno" e "6 ore e 11", e la pillola dell'orario di uscita) per migliorare l'estetica e la coerenza visiva.
+    * **Colori Bottoni Aggiornati:**
+        * "Ora del Giorno" (`7h 12m`): Aggiornato a **Dusty Red** (`#bb2e29`).
+        * "6 ore e 11" (`6h 1m`): Aggiornato a **Cedar Chest** (`#c85753`).
+    * **Miglioramenti Interni:** Aggiunta una classe CSS (`custom-button-container`) al div contenitore dei bottoni e al selettore, e (`custom-exit-time-pill`) allo span dell'orario di uscita per una gestione più robusta dello stile.
+
+---
+
+## **Versione 2.3**
+* **Data di Rilascio:** 22 Luglio 2025
+* **Autore:** Stefano
+* **Modifiche:**
+    * **Colori Bottoni Aggiornati:**
+        * "Ora del Giorno" (`7h 12m`): Il colore del bottone e della pillola è stato cambiato a **Dusty Red** (`#bb2e29`).
+        * "6 ore e 11" (`6h 1m`): Il colore del bottone e della pillola è stato cambiato a **Cedar Chest** (`#c85753`).
+
+---
+
+## **Versione 2.1**
+* **Data di Rilascio:** 22 Luglio 2025
+* **Autore:** Stefano
+* **Modifiche:**
+    * **Colore "Ora del Giorno" Aggiornato:** Il bottone "Ora del Giorno" (`7h 12m`) e la rispettiva pillola dell'orario di uscita sono stati modificati al colore **Rosso** (`#dc3545`).
+    * **Forzatura Aggiornamento:** Modifica del numero di versione per facilitare l'aggiornamento automatico su Tampermonkey.
+
+---
+
 ## **Versione 2.0 (Unificato)**
 * **Data di Rilascio:** 22 Luglio 2025
 * **Autore:** Stefano
@@ -24,7 +55,7 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 ### **Script: EVO Exit Time Calculator (TEST con Fascia Oraria) - (Versioni più recenti)**
 
 * **Versione 1.27:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 22 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:** Correzioni minori alla rilevazione dei badge (gestione del `.tipo`) e all'accuratezza del calcolo dei minuti lavorativi (aggiustato a 432 minuti per 7h 12m).
 * **Versione 1.25:**
@@ -49,52 +80,51 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
     * **Modifiche:**
         * **Supporto Telelavoro:** Aggiunto il supporto per il parsing dei formati di timbratura specifici per il "Telelavoro" (`E[HH:mm]` e `U[HH:mm]`), oltre al formato standard (`E HH:mm`, `U HH:mm`).
 * **Versione 1.21:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:** Nessun cambiamento funzionale significativo rispetto alla v1.19. (Potrebbe essere stata un test o un'etichetta provvisoria).
 * **Versione 1.19:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:**
         * **Testo Bottone Aggiornato:** Il testo del bottone per avviare il calcolo è stato modificato da "Calcola uscita oggi" a **"Ora del Giorno"**.
 * **Versione 1.18:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:**
         * **Gestione Pausa Minima:** Introdotta una **pausa minima predefinita di 10 minuti**. Se non viene rilevata una pausa U/E o se è inferiore a 10 minuti, vengono comunque considerati 10 minuti. Altrimenti, viene utilizzata la pausa U/E effettiva (se valida).
 * **Versione 1.17:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:**
         * **Visibilità Selettiva Bottone:** Il bottone "Ora del Giorno" appare ora **esclusivamente sulla pagina "Cartellino"**.
 * **Versione 1.16:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:**
         * **Correzioni UI:** Risolti problemi relativi al posizionamento del bottone "Calcola uscita oggi", garantendone l'ancoraggio corretto accanto al bottone "Aggiorna". Aggiunti `stopPropagation()` e `preventDefault()` per migliorare la gestione degli eventi.
 * **Versione 1.0 - 1.15:**
-    * **Data di Rilascio:** *Date varie*
+    * **Data di Rilascio:** *Date varie (precedenti a Luglio 2025)*
     * **Autore:** Stefano
     * **Modifiche:** Implementazione iniziale del meccanismo di calcolo dell'orario di uscita basato su un turno di 7 ore e 12 minuti. Introduzione e perfezionamento della logica di rilevamento e gestione della pausa tra le timbrature di Uscita (`U`) ed Entrata (`E`). Varie correzioni di bug, ottimizzazioni del codice e miglioramenti della stabilità.
 
 ### **Script: EVO Exit Time Calculator (6h 11m) - (Versioni più recenti)**
 
 * **Versione 1.14 (ultima versione separata):**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:**
         * Colore bottone e pillola orario cambiati da viola a blu.
         * Migliorato il posizionamento di fallback: il bottone si posiziona immediatamente accanto ad "Aggiorna" se l'altro script non è attivo, con un margine di 10px a sinistra.
         * Rimozione del margine sinistro quando si posiziona accanto al blocco "Ora del Giorno".
 * **Versione 1.13:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:** Migliorata la logica di posizionamento per garantire un posizionamento più rapido e affidabile accanto al blocco "Fascia Oraria + Ora del Giorno" (se l'altro script è attivo) o accanto ad "Aggiorna" (fallback).
 * **Versione 1.12:**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** 18 Luglio 2025
     * **Autore:** Stefano
     * **Modifiche:** Introdotta attesa attiva per il posizionamento del bottone accanto al blocco "Ora del Giorno", con fallback su "Aggiorna" dopo timeout.
 * **Versione 1.x (versioni iniziali):**
-    * **Data di Rilascio:** *Non Specificata*
+    * **Data di Rilascio:** *Date varie (precedenti a Luglio 2025)*
     * **Autore:** Stefano
-    * **Modifiche:** Implementazione base del calcolo per 6 ore e 1 minuto, gestione della pausa (reale o predefinita), limite di ingresso 07:30, e visualizzazione dell'orario in una "pillola" viola.
