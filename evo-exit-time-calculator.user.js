@@ -25,7 +25,7 @@
     const STORAGE_KEY = 'evoExitTime_selectedFascia'; // Chiave per salvare la preferenza della fascia
 
     // --- Colori per i bottoni e le pillole ---
-    const COLOR_ORA_DEL_GIORNO = "#dc3545;"; // Rosso
+    const COLOR_ORA_DEL_GIORNO = "#dc3545"; // Rosso (colore richiesto)
     const COLOR_SEI_ORE_UNDICI = "#8A2BE2"; // Viola
 
     /**
@@ -58,7 +58,7 @@
      */
     function calcolaOrarioDiUscita(fasciaSelezionataKey, minutiLavorativiNetti, displayColor, calcoloTipo) {
         const limiteIngressoMinuti = timeToMinutes(FASCE_ORARIE[fasciaSelezionataKey]);
-        console.log(`--- Avvio calcolo (${calcoloTipo} - Unificato v2.0). Fascia selezionata: ${fasciaSelezionataKey}. Limite ingresso: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
+        console.log(`--- Avvio calcolo (${calcoloTipo} - Unificato v2.1). Fascia selezionata: ${fasciaSelezionataKey}. Limite ingresso: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
 
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate());
@@ -289,7 +289,7 @@
             oraDelGiornoButton.textContent = "Ora del Giorno";
             Object.assign(oraDelGiornoButton.style, {
                 padding: "10px",
-                backgroundColor: COLOR_ORA_DEL_GIORNO, // Verde
+                backgroundColor: COLOR_ORA_DEL_GIORNO, // Rosso
                 color: "white",
                 border: "none",
                 borderRadius: "6px",
