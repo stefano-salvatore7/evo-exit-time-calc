@@ -26,7 +26,7 @@
 
     // --- Colori per i bottoni e le pillole ---
     const COLOR_ORA_DEL_GIORNO = "#28a745"; // Verde
-    const COLOR_SEI_ORE_UNDICI = "#007bff"; // Blu
+    const COLOR_SEI_ORE_UNDICI = "#8A2BE2"; // Viola (colore richiesto)
 
     /**
      * Converte una stringa oraria (HH:mm) in minuti totali dalla mezzanotte.
@@ -306,7 +306,7 @@
             seiOreUndiciButton.textContent = "6 ore e 11";
             Object.assign(seiOreUndiciButton.style, {
                 padding: "10px",
-                backgroundColor: COLOR_SEI_ORE_UNDICI, // Blu
+                backgroundColor: COLOR_SEI_ORE_UNDICI, // Viola
                 color: "white",
                 border: "none",
                 borderRadius: "6px",
