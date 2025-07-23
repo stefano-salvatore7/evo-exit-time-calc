@@ -2,7 +2,7 @@
 
 Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature, dell'eventuale pausa e della fascia oraria di ingresso desiderata.
 
-**(Versione Script: 2.0 - Unificata)**
+**(Versione Script: 2.4 - Unificata)**
 
 ## Caratteristiche
 
@@ -16,8 +16,8 @@ Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione
 * **Gestione Timbrature Flessibile:** Supporta sia il formato standard `E HH:mm` / `U HH:mm` che il formato "Telelavoro" `E[HH:mm]` / `U[HH:mm]`.
 * **Gestione Pausa Pranzo:** Calcola e include nel totale lavorato la durata della pausa pranzo (ultima "U" seguita dalla prima "E"). Aggiunge una pausa predefinita di **10 minuti** se non rilevata o troppo breve (utilizza il valore maggiore tra la pausa effettiva e i 10 minuti).
 * **Iniezione Diretta e Sovrascrittura con Stile:** Inserisce l'orario calcolato direttamente nella tabella delle timbrature del giorno, visualizzandolo come una "pillola" stilizzata:
-    * **Verde** per il calcolo "Ora del Giorno".
-    * **Blu** per il calcolo "6 ore e 11".
+    * **Rosso** per il calcolo "Ora del Giorno".
+    * **Rosso chiaro** per il calcolo "6 ore e 11".
     * Ogni nuovo calcolo **sovrascrive** qualsiasi orario precedentemente visualizzato da questo script nella stessa cella.
 * **Posizionamento Intuitivo:** Il selettore della fascia oraria e i due bottoni (**"Ora del Giorno"** e **"6 ore e 11"**) sono posizionati strategicamente in un unico blocco, vicino ai controlli principali della pagina (come il bottone "Aggiorna").
 * **Apparizione Condizionale:** Gli elementi UI dello script appaiono **esclusivamente sulla pagina "Cartellino"** del portale, evitando la loro visualizzazione su altre sezioni non pertinenti.
@@ -34,11 +34,10 @@ Se non l'hai già fatto, installa l'estensione Tampermonkey nel tuo browser:
 * **[Tampermonkey per Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpbldmmepgdkmfapfmccmocdkf)**
 * **[Tampermonkey per Firefox](https://addons.mozilla.org/it/firefox/addon/tampermonkey/)** (o Greasemonkey se preferisci)
 
-### 2. **DISABILITA/ELIMINA VECCHI SCRIPT (IMPORTANTE!)**
+### 2. **DISABILITA/ELIMINA EVENTUALE VECCHIO SCRIPT (IMPORTANTE!)**
 
 Prima di installare questa versione unificata, è **FONDAMENTALE** che tu disabiliti o elimini i due script precedenti che potrebbero essere ancora presenti nella tua dashboard di Tampermonkey. Lasciarli attivi potrebbe causare conflitti e comportamenti imprevedibili.
 
-* `EVO Exit Time Calculator (TEST con Fascia Oraria)`
 * `EVO Exit Time Calculator (6h 11m)`
 
 ### 3. Configurazione del Browser (Importante per l'esecuzione)
@@ -85,9 +84,9 @@ Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automati
 Una volta installato, lo script si attiverà automaticamente quando visiterai la pagina delle timbrature EVO su `https://personale-unibo.hrgpi.it/*`.
 
 1.  Naviga alla pagina delle timbrature (assicurati che sia la pagina "Cartellino").
-2.  Troverai un **selettore a discesa** per la "Fascia Oraria" e **due bottoni**: "**Ora del Giorno**" (verde) e "**6 ore e 11**" (blu), posizionati strategicamente vicino al bottone "Aggiorna".
+2.  Troverai un **selettore a discesa** per la "Fascia Oraria" e **due bottoni**: "**Ora del Giorno**" (rosso) e "**6 ore e 11**" (rosso chiaro), posizionati sotto al bottone "Aggiorna".
 3.  **Seleziona la fascia oraria** desiderata dal selettore. La tua scelta verrà salvata automaticamente.
-4.  Clicca su "**Ora del Giorno**" per visualizzare l'orario di uscita calcolato per 7h 12m, oppure clicca su "**6 ore e 11**" per il calcolo di 6h 1m. L'orario apparirà in una "pillola" colorata nella tabella.
+4.  Clicca su "**Ora del Giorno**" per visualizzare l'orario di uscita calcolato per 7h 12m, oppure clicca su "**6 ore e 11**" per il calcolo di 6h 1m. L'orario apparirà in una "pillola" colorata nella tabella in corrispondenza della data corrispondente.
 
 ## Contributi (Facoltativo)
 
