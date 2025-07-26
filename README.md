@@ -1,6 +1,6 @@
 # EVO Exit Time Calculator
 
-Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature, dell'eventuale pausa e della fascia oraria di ingresso desiderata.
+Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature, dell'eventuale pausa e della fascia oraria di ingresso timbrata.
 
 **(Versione Script: 3.0 - Ufficiale)**
 
