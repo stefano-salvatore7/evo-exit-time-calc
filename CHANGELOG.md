@@ -4,6 +4,19 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 
 ---
 
+## **Versione 3.0 (Ufficiale)**
+* **Data di Rilascio:** 26 Luglio 2025
+* **Autore:** Stefano
+* **Modifiche Principali:**
+    * **Ristrutturazione UI Complessa:** L'interfaccia utente è stata completamente ripensata per un design più pulito e funzionale. I bottoni "Ora del Giorno" e "6 ore e 11" sono stati sostituiti da uno **switch toggle compatto** per selezionare la modalità di calcolo (7:12 o 6:01).
+    * **Box Uscita Dedicata:** L'orario di uscita calcolato non è più una "pillola" all'interno della tabella EVO, ma è visualizzato in una **box dedicata e compatta** (`"Uscita: HH:mm"`) con uno sfondo grigio chiaro (`#DDD8D8`) e un bordo sottile, posizionata vicino ai controlli principali per una visibilità immediata.
+    * **Persistent Mode Selection:** La selezione della modalità di calcolo (7:12 o 6:01) è ora persistente e viene salvata automaticamente.
+    * **Posizionamento Migliorato:** Il nuovo blocco UI (`fascia + switch + box uscita`) è ancorato in modo più robusto nella pagina per garantire una visualizzazione coerente.
+    * **Consolidamento e Pulizia Codice:** Refactoring significativo del codice per migliorare la leggibilità, la manutenibilità e l'efficienza. Tutte le configurazioni chiave sono ora centralizzate all'inizio dello script.
+    * **Aggiornamento del Font:** Il font "Open Sans" è stato mantenuto e applicato in modo più uniforme ai nuovi elementi dell'interfaccia.
+
+---
+
 ## **Versione 2.4**
 * **Data di Rilascio:** 22 Luglio 2025
 * **Autore:** Stefano
