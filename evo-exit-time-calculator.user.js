@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       3.0
+// @version       3.1
 // @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO). Include selettore fascia e switch 7:12/6:01.
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
@@ -426,7 +426,7 @@
         // 1. Aggiorna l'orario nella cella EVO originale (se esiste)
         const celle = righeDelGiorno[0].querySelectorAll("td");
         if (celle.length >= 8) {
-            const cellaOrario = celle[7];
+            const cellaOrario = celle[6];
             cellaOrario.innerHTML = '';
             const displaySpan = document.createElement('span');
             displaySpan.textContent = `U ${uscitaPrevista}`;
