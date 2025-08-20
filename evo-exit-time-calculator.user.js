@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name          EVO Exit Time Calculator
+// @name          EVO - Exit Time Calculator
 // @namespace     https://unibo.it/
-// @version       3.1
-// @description   Calcola e mostra l'orario di uscita su Personale Unibo (Sistema EVO). Include selettore fascia e switch 7:12/6:01.
+// @version       3.2
+// @description   Calcola e mostra l'orario di uscita nel Cartellino. Include selettore fascia oraria e switch 7:12/6:01.
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
+// @icon          https://www.unibo.it/favicon.ico
 // @grant         GM_setValue
 // @grant         GM_getValue
 // @grant         GM_deleteValue
