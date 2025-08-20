@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name          EVO - Exit Time Calculator
+// @name          EVO - Calcola Orario di Uscita
 // @namespace     https://unibo.it/
 // @version       3.2
 // @description   Calcola e mostra l'orario di uscita nel Cartellino. Include selettore fascia oraria e switch 7:12/6:01.
