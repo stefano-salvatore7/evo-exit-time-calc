@@ -4,7 +4,7 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 
 ---
 
-## **Versione 3.0 (Ufficiale)**
+## **Versione 3.2**
 * **Data di Rilascio:** 26 Luglio 2025
 * **Autore:** Stefano
 * **Modifiche Principali:**
