@@ -2,7 +2,7 @@
 
 Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature, dell'eventuale pausa e della propria linea oraria.
 
-**(Versione Script: 3.2)**
+**(Versione Script: 4.0)**
 
 ## Caratteristiche
 
@@ -14,12 +14,18 @@ Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione
     * Include un **selettore a discesa** che permette di scegliere la fascia oraria desiderata per l'ingresso (`07:30 - 08:30`, `08:00 - 09:00`, `08:30 - 09:30`).
     * L'orario di ingresso considerato per entrambi i calcoli sarà il **maggiore** tra la prima timbratura di ingresso effettiva e il limite inferiore della fascia oraria selezionata.
     * La preferenza della fascia oraria viene **salvata automaticamente** e ricaricata alla visita successiva della pagina.
-* **Gestione Timbrature Flessibile:** Supporta sia il formato standard `E HH:mm` / `U HH:mm` che il formato "Telelavoro" `E[HH:mm]` / `U[HH:mm]`.
+* **Compatibilità con il Nuovo HRSuite EVO (Gennaio 2026):**
+    * Lo script è stato completamente adattato alla nuova struttura HTML introdotta con l'aggiornamento del 24/01/2026.
+    * Supporta la nuova interfaccia con elementi `div.clocking.entry` e `div.clocking.exit` con icone Material Symbols.
+    * Rilevamento intelligente delle timbrature basato sulla riga del giorno corrente, evitando conflitti con giorni precedenti.
+* **Gestione Timbrature Flessibile:** Identifica automaticamente le timbrature di entrata e uscita dalla nuova struttura HTML della piattaforma.
 * **Gestione Pausa Pranzo:** Calcola e include nel totale lavorato la durata della pausa pranzo (ultima "U" seguita dalla prima "E"). Aggiunge una pausa predefinita di **10 minuti** se non rilevata o troppo breve (utilizza il valore maggiore tra la pausa effettiva e i 10 minuti).
-* **Visualizzazione Orario di Uscita Dedicata:** L'orario di uscita calcolato viene visualizzato in una **box dedicata e compatta** (`"Uscita: HH:mm"`) con uno sfondo grigio chiaro e un bordo sottile, posizionata in un blocco UI riorganizzato. L'orario è anche inserito come "pillola" nella cella della tabella EVO in corrispondenza del giorno corrente, sovrascrivendo qualsiasi contenuto precedente dello script.
+* **Visualizzazione Orario di Uscita Doppia:** 
+    * L'orario di uscita calcolato viene visualizzato in una **box dedicata e compatta** (`"Uscita: HH:mm"`) con uno sfondo grigio chiaro e un bordo sottile, posizionata nel blocco UI in alto.
+    * L'orario viene anche inserito come **badge rosso con icona ➡️** nella colonna "Orario" della tabella, sostituendo il contenuto esistente (es. "8086").
 * **Posizionamento Intuitivo:** Il selettore della fascia oraria, lo switch per la modalità di calcolo e la box dell'orario di uscita sono posizionati strategicamente in un **unico blocco UI compatto**, vicino ai controlli principali della pagina (come il bottone "Aggiorna").
 * **Apparizione Condizionale:** Gli elementi UI dello script appaiono **esclusivamente sulla pagina "Cartellino"** del portale, evitando la loro visualizzazione su altre sezioni non pertinenti.
-* **Miglioramento Estetico:** Il font **"Open Sans"** è ora applicato in modo uniforme a tutti gli elementi UI generati dallo script per una migliore estetica e coerenza visiva.
+* **Miglioramento Estetico:** Il font **"Open Sans"** è applicato in modo uniforme a tutti gli elementi UI generati dallo script per una migliore estetica e coerenza visiva.
 
 ## Installazione e Aggiornamenti Automatici
 
@@ -35,8 +41,9 @@ Se non l'hai già fatto, installa l'estensione Tampermonkey nel tuo browser:
 
 ### 2. **DISABILITA/ELIMINA EVENTUALE VECCHIO SCRIPT (IMPORTANTE!)**
 
-Prima di installare questa versione 3.0, è **FONDAMENTALE** che tu disabiliti o elimini qualsiasi versione precedente di "EVO Exit Time Calculator" (incluse le versioni "Unificate" e quelle separate "6h 11m") che potrebbero essere ancora presenti nella tua dashboard di Tampermonkey. Lasciarli attivi potrebbe causare conflitti.
+Prima di installare questa versione 4.0, è **FONDAMENTALE** che tu disabiliti o elimini qualsiasi versione precedente di "EVO Exit Time Calculator" (incluse le versioni 3.x e precedenti) che potrebbero essere ancora presenti nella tua dashboard di Tampermonkey. Lasciarli attivi potrebbe causare conflitti.
 
+* `EVO Exit Time Calculator` (versioni 3.2 e precedenti)
 * `EVO Exit Time Calculator (Unificato)`
 * `EVO Exit Time Calculator (6h 11m)`
 
@@ -84,9 +91,19 @@ Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automati
 Una volta installato, lo script si attiverà automaticamente quando visiterai la pagina delle timbrature EVO su `https://personale-unibo.hrgpi.it/*`.
 
 1.  Naviga alla pagina delle timbrature (assicurati che sia la pagina "Cartellino").
-2.  Troverai un **selettore a discesa** per la "Linea oraria" e uno **switch toggle** ("7:12" / "6:01") posizionati strategicamente, insieme a una **box compatta per l'orario di uscita**, sotto al bottone "Aggiorna".
+2.  Troverai un **selettore a discesa** per la "Linea oraria" e uno **switch toggle** ("7:12" / "6:01") posizionati strategicamente, insieme a una **box compatta per l'orario di uscita**, vicino al bottone "Aggiorna".
 3.  **Seleziona la fascia oraria** desiderata dal selettore e la **modalità di calcolo** desiderata (7:12 o 6:01) tramite lo switch.
-4.  L'orario di uscita calcolato apparirà automaticamente nella box dedicata e anche come "pillola" nella tabella in corrispondenza della data corrente.
+4.  L'orario di uscita calcolato apparirà automaticamente nella box dedicata in alto e come badge rosso **➡️ HH:mm** nella colonna "Orario" della tabella in corrispondenza della data corrente.
+
+## Novità Versione 4.0
+
+La versione 4.0 introduce importanti aggiornamenti per la compatibilità con il nuovo HRSuite EVO:
+
+* ✅ **Compatibilità totale** con l'aggiornamento del 24/01/2026
+* ✅ **Rilevamento accurato** delle timbrature solo del giorno corrente
+* ✅ **Badge con icona ➡️** nella colonna "Orario" della tabella
+* ✅ **Algoritmo di posizionamento** migliorato con fallback multipli
+* ✅ **Codice completamente refactorizzato** per maggiore manutenibilità
 
 ## Contributi
 
