@@ -4,6 +4,27 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 
 ---
 
+## **Versione 4.0**
+* **Data di Rilascio:** 24 Gennaio 2026
+* **Autore:** Stefano
+* **Modifiche Principali:**
+    * **🔄 Adattamento Completo al Nuovo HRSuite EVO:** Lo script è stato completamente riscritto per adattarsi all'aggiornamento della piattaforma HRSuite EVO del 24/01/2026, che ha introdotto una nuova struttura HTML per il cartellino presenze.
+    * **Nuova Struttura HTML Supportata:** 
+        * Il sistema ora utilizza elementi `div.clocking.entry` e `div.clocking.exit` con icone Material Symbols (`arrow_forward` e `arrow_back`) invece dei precedenti badge con testo "E HH:mm" / "U HH:mm".
+        * Gli orari sono ora contenuti in `<span class="fw-bold text-black">`.
+        * Ogni riga della tabella è identificata dal formato "N giorno" (es. "24 sab").
+    * **Filtro per Giorno Corrente:** Implementata una nuova funzione `estraiTimbratureGiornoCorrente()` che:
+        * Identifica la riga della tabella corrispondente al giorno corrente basandosi sul numero del giorno.
+        * Estrae **solo** le timbrature presenti in quella riga specifica, risolvendo il bug che causava il calcolo su timbrature di giorni precedenti.
+    * **Badge nella Tabella Aggiornato:**
+        * Il badge dell'orario di uscita calcolato viene ora inserito nella colonna "Orario" (indice 4), **sostituendo** completamente il contenuto esistente (es. "8086").
+        * Icona aggiornata da "U" a **➡️** per una migliore identificazione visiva dell'orario di uscita.
+    * **Posizionamento UI Migliorato:** Algoritmo di ricerca più robusto per il contenitore dei bottoni, con fallback multipli (`.row.buttons` → `div.row.mb-2` → `div.row` → inserimento dopo bottone "Aggiorna").
+    * **Versione Incrementata:** Aggiornamento del numero di versione a **4.0** per riflettere i cambiamenti sostanziali nell'architettura dello script.
+    * **Codice Refactoring:** Migliorata la leggibilità e la manutenibilità del codice con funzioni più modulari e commenti aggiornati.
+
+---
+
 ## **Versione 3.2**
 * **Data di Rilascio:** 26 Luglio 2025
 * **Autore:** Stefano
@@ -141,3 +162,4 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 * **Versione 1.x (versioni iniziali):**
     * **Data di Rilascio:** *Date varie (precedenti a Luglio 2025)*
     * **Autore:** Stefano
+    * **Modifiche:** Implementazione iniziale del calcolatore per turni di 6 ore e 11 minuti con logiche di base per il rilevamento delle timbrature e il calcolo dell'orario di uscita.
