@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          EVO - Calcola Orario di Uscita
 // @namespace     https://unibo.it/
-// @version       4.0
+// @version       4.1
 // @description   Calcola e mostra l'orario di uscita nel Cartellino. Include selettore fascia oraria e switch 7:12/6:01.
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
