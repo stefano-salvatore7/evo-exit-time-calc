@@ -31,7 +31,7 @@ Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione
 
 Per installare lo script e assicurarti che si aggiorni automaticamente dal repository GitHub, segui i passaggi per il tuo browser:
 
-### 1. Installare l'estensione Tampermonkey
+### 1. Installare l'estensione [Tampermonkey](https://www.tampermonkey.net/)
 
 Se non l'hai già fatto, installa l'estensione Tampermonkey nel tuo browser:
 
