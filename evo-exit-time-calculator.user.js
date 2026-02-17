@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name          EVO - Calcola Orario di Uscita
 // @namespace     https://unibo.it/
-// @version       4.2
-// @description   Calcola e mostra l'orario di uscita nel Cartellino. Include selettore fascia oraria e switch 7:12/6:01.
+// @version       4.3
+// @description   Calcola e mostra l'orario di uscita nel Cartellino. Include selettore fascia oraria e switch 7:12/6:01. Responsive mobile.
 // @author        Stefano
 // @match         https://personale-unibo.hrgpi.it/*
 // @icon          https://www.unibo.it/favicon.ico
@@ -63,6 +63,7 @@
 
     /**
      * Inietta il CSS per importare e applicare il font Open Sans e per gli stili dell'UI.
+     * Include un blocco responsive per dispositivi mobile (solo grafico, logica invariata).
      */
     function injectOpenSansAndUI_CSS() {
         const style = document.createElement('style');
@@ -223,9 +224,164 @@
                 vertical-align: middle;
                 color: ${COLOR_COMPACT_BOX_TEXT};
             }
+
+            /* ================================================================
+               RESPONSIVE MOBILE
+               Stessa logica di rilevamento di EVO Mobile Plus.
+               Solo grafica: font, dimensioni, padding. Logica JS invariata.
+            ================================================================ */
+            @media (max-width: 1024px) and (orientation: portrait),
+                   (max-width: 768px),
+                   (hover: none) and (pointer: coarse) {
+
+                #evoCalculatorContainer {
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                    flex-direction: row !important;
+                    flex-wrap: wrap !important;
+                    gap: 1.2rem !important;
+                    padding: 1.2rem !important;
+                    margin-top: 1rem !important;
+                    margin-bottom: 1rem !important;
+                    border-radius: 0.7rem !important;
+                }
+
+                /* Label "Linea oraria" / "Ora del giorno" */
+                .evo-label {
+                    font-size: 1.5rem !important;
+                    margin-bottom: 0.6rem !important;
+                    color: #555 !important;
+                }
+
+                /* Wrapper gruppo: occupa almeno metà riga ciascuno */
+                .evo-group-wrapper {
+                    flex: 1 1 auto !important;
+                    align-items: flex-start !important;
+                    min-width: 0 !important;
+                }
+
+                /* Inner controls affiancati */
+                .evo-controls-inner {
+                    gap: 0.8rem !important;
+                    flex-wrap: nowrap !important;
+                    align-items: center !important;
+                }
+
+                /* Select fascia oraria */
+                #fasciaOrariaSelector {
+                    font-size: 1.8rem !important;
+                    padding: 0.8rem 0.6rem !important;
+                    width: auto !important;
+                    min-width: 10rem !important;
+                    height: auto !important;
+                    border-radius: 0.5rem !important;
+                    border: 1px solid #ccc !important;
+                    -webkit-appearance: none !important;
+                    appearance: none !important;
+                }
+
+                /* Switch 7:12 / 6:01 */
+                .calc-mode-switch {
+                    font-size: 1.8rem !important;
+                    width: auto !important;
+                    min-width: 9rem !important;
+                    height: auto !important;
+                    padding: 0.3rem !important;
+                    border-radius: 0.6rem !important;
+                }
+
+                .calc-mode-switch-segment {
+                    font-size: 1.8rem !important;
+                    padding: 0.6rem 0.8rem !important;
+                    line-height: 1.4 !important;
+                }
+
+                /* Lo slider si adatta all'altezza automatica */
+                .calc-mode-slider {
+                    top: 0.3rem !important;
+                    height: calc(100% - 0.6rem) !important;
+                    border-radius: 0.4rem !important;
+                }
+
+                /* Box compatta "Uscita: HH:MM" */
+                #compactExitTimeBox {
+                    font-size: 1.8rem !important;
+                    width: auto !important;
+                    min-width: 9rem !important;
+                    height: auto !important;
+                    padding: 0.8rem 1.2rem !important;
+                    border-radius: 0.5rem !important;
+                    gap: 0.5rem !important;
+                }
+
+                #compactExitTimeBox .exit-label {
+                    font-size: 1.8rem !important;
+                }
+
+                #compactExitTimeBox .value {
+                    font-size: 2rem !important;
+                    font-weight: 700 !important;
+                }
+
+                /* Pillola orario nella colonna tabella */
+                .custom-exit-time-pill {
+                    font-size: 1.6rem !important;
+                    padding: 0.4rem 0.8rem !important;
+                    border-radius: 0.4rem !important;
+                }
+            }
+
+            /* Schermi molto piccoli (≤480px portrait) */
+            @media (max-width: 480px) and (orientation: portrait),
+                   (max-width: 640px) and (orientation: portrait) and (max-height: 800px) {
+
+                #evoCalculatorContainer {
+                    gap: 1rem !important;
+                    padding: 1rem !important;
+                }
+
+                .evo-label {
+                    font-size: 1.4rem !important;
+                }
+
+                #fasciaOrariaSelector {
+                    font-size: 1.6rem !important;
+                    padding: 0.7rem 0.5rem !important;
+                    min-width: 9rem !important;
+                }
+
+                .calc-mode-switch {
+                    font-size: 1.6rem !important;
+                    min-width: 8rem !important;
+                }
+
+                .calc-mode-switch-segment {
+                    font-size: 1.6rem !important;
+                    padding: 0.5rem 0.6rem !important;
+                }
+
+                #compactExitTimeBox {
+                    font-size: 1.6rem !important;
+                    min-width: 8rem !important;
+                    padding: 0.7rem 1rem !important;
+                }
+
+                #compactExitTimeBox .exit-label {
+                    font-size: 1.6rem !important;
+                }
+
+                #compactExitTimeBox .value {
+                    font-size: 1.8rem !important;
+                }
+
+                .custom-exit-time-pill {
+                    font-size: 1.4rem !important;
+                    padding: 0.35rem 0.7rem !important;
+                }
+            }
         `;
         document.head.appendChild(style);
-        console.log("Stili CSS iniettati (v3.5).");
+        console.log("Stili CSS iniettati (v4.3).");
     }
 
     /**
@@ -309,7 +465,7 @@
      */
     function calcolaOrarioDiUscita(fasciaSelezionataKey, minutiLavorativiNetti, displayColor, calcoloTipo) {
         const limiteIngressoMinuti = timeToMinutes(FASCE_ORARIE[fasciaSelezionataKey]);
-        console.log(`--- Avvio calcolo (${calcoloTipo} - v3.5). Fascia: ${fasciaSelezionataKey}. Limite: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
+        console.log(`--- Avvio calcolo (${calcoloTipo} - v4.3). Fascia: ${fasciaSelezionataKey}. Limite: ${FASCE_ORARIE[fasciaSelezionataKey]} ---`);
 
         const oggi = new Date();
         const giornoOggi = String(oggi.getDate());
@@ -364,15 +520,6 @@
             }
         }
 
-        //if (pausaInizio) {
-        //    for (let i = lastUIndex + 1; i < badgeList.length; i++) {
-        //        if (badgeList[i].tipo === "E") {
-        //            pausaFine = badgeList[i].orario;
-        //            break;
-        //        }
-        //    }
-        //}
-        
         if (pausaInizio && pausaFine) {
             const minutiPausaReale = timeToMinutes(pausaFine) - timeToMinutes(pausaInizio);
             if (minutiPausaReale > 0 && minutiPausaReale < 180) {
