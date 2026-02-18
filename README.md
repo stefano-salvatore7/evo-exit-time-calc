@@ -2,7 +2,7 @@
 
 Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione delle presenze EVO (usato su `https://personale-unibo.hrgpi.it/`). Calcola automaticamente l'orario di uscita previsto per la giornata corrente, tenendo conto delle timbrature, dell'eventuale pausa e della propria linea oraria.
 
-**(Versione Script: 4.0)**
+**(Versione Script: 4.3)**
 
 ## Caratteristiche
 
@@ -14,6 +14,11 @@ Questo script Tampermonkey/Greasemonkey è progettato per il sistema di gestione
     * Include un **selettore a discesa** che permette di scegliere la fascia oraria desiderata per l'ingresso (`07:30 - 08:30`, `08:00 - 09:00`, `08:30 - 09:30`).
     * L'orario di ingresso considerato per entrambi i calcoli sarà il **maggiore** tra la prima timbratura di ingresso effettiva e il limite inferiore della fascia oraria selezionata.
     * La preferenza della fascia oraria viene **salvata automaticamente** e ricaricata alla visita successiva della pagina.
+* **Ottimizzazione Mobile (Novità v4.3):**
+    * **Layout responsive** per smartphone e tablet
+    * **Font grandi e leggibili** (1.8-2rem) su dispositivi mobile
+    * **Controlli touch-friendly** con dimensioni adeguate
+    * **Integrazione perfetta** con lo script [EVO - Vista Mobile Cartellino](https://github.com/stefano-salvatore7/evo-mobile-cartellino-test)
 * **Compatibilità con il Nuovo HRSuite EVO (Gennaio 2026):**
     * Lo script è stato completamente adattato alla nuova struttura HTML introdotta con l'aggiornamento del 24/01/2026.
     * Supporta la nuova interfaccia con elementi `div.clocking.entry` e `div.clocking.exit` con icone Material Symbols.
@@ -39,9 +44,13 @@ Se non l'hai già fatto, installa l'estensione Tampermonkey nel tuo browser:
 * **[Tampermonkey per Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)**
 * **[Tampermonkey per Firefox](https://addons.mozilla.org/it/firefox/addon/tampermonkey/)** (o Greasemonkey se preferisci)
 
+**📱 Per dispositivi mobile:**
+* **Android:** Firefox Mobile + Tampermonkey
+* **iOS:** Orion Browser + Tampermonkey
+
 ### 2. **DISABILITA/ELIMINA EVENTUALE VECCHIO SCRIPT (IMPORTANTE!)**
 
-Prima di installare questa versione 4.0, è **FONDAMENTALE** che tu disabiliti o elimini qualsiasi versione precedente di "EVO Exit Time Calculator" (incluse le versioni 3.x e precedenti) che potrebbero essere ancora presenti nella tua dashboard di Tampermonkey. Lasciarli attivi potrebbe causare conflitti.
+Prima di installare questa versione 4.3, è **FONDAMENTALE** che tu disabiliti o elimini qualsiasi versione precedente di "EVO Exit Time Calculator" (incluse le versioni 3.x e 4.0-4.2) che potrebbero essere ancora presenti nella tua dashboard di Tampermonkey. Lasciarli attivi potrebbe causare conflitti.
 
 * `EVO Exit Time Calculator` (versioni 3.2 e precedenti)
 * `EVO Exit Time Calculator (Unificato)`
@@ -90,16 +99,62 @@ Una volta installato tramite il link RAW, Tampermonkey dovrebbe gestire automati
 
 Una volta installato, lo script si attiverà automaticamente quando visiterai la pagina delle timbrature EVO su `https://personale-unibo.hrgpi.it/*`.
 
+### Su Desktop
+
 1.  Naviga alla pagina delle timbrature (assicurati che sia la pagina "Cartellino").
 2.  Troverai un **selettore a discesa** per la "Linea oraria" e uno **switch toggle** ("7:12" / "6:01") posizionati strategicamente, insieme a una **box compatta per l'orario di uscita**, vicino al bottone "Aggiorna".
 3.  **Seleziona la fascia oraria** desiderata dal selettore e la **modalità di calcolo** desiderata (7:12 o 6:01) tramite lo switch.
 4.  L'orario di uscita calcolato apparirà automaticamente nella box dedicata in alto e come badge rosso **➡️ HH:mm** nella colonna "Orario" della tabella in corrispondenza della data corrente.
 
-## Novità Versione 4.0
+### Su Mobile (Novità v4.3)
 
-La versione 4.0 introduce importanti aggiornamenti per la compatibilità con il nuovo HRSuite EVO:
+**Vista Mobile Nativa:**
+Se usi il browser mobile (<768px o dispositivo touch), il widget si adatta automaticamente:
+* Font grandi e leggibili (1.8-2rem)
+* Controlli touch-friendly con dimensioni adeguate
+* Layout responsive che si adatta alla larghezza dello schermo
 
-* ✅ **Compatibilità totale** con l'aggiornamento del 24/01/2026
+**Vista Mobile Cartellino (con EVO - Vista Mobile Cartellino):**
+Se hai installato anche lo script [EVO - Vista Mobile Cartellino](https://github.com/stefano-salvatore7/evo-mobile-cartellino-test):
+* Il widget viene **automaticamente integrato** nella barra superiore della vista mobile
+* Appare sotto l'etichetta "⏱ Orario uscita"
+* L'orario calcolato viene mostrato anche come **pillola ⏰ HH:MM** nell'header della card del giorno corrente
+* Tutti gli event listener e funzionalità rimangono intatti
+
+**Nessuna configurazione richiesta!** Gli script si rilevano e integrano automaticamente.
+
+## Compatibilità con Altri Script EVO
+
+✅ **Perfettamente compatibile con:**
+
+* **[EVO - Vista Mobile Cartellino](https://github.com/stefano-salvatore7/evo-mobile-cartellino-test)** 📱  
+  *Trasforma il cartellino in card mobile ottimizzate. Il widget Exit Time Calculator viene integrato automaticamente nella barra superiore.*
+
+* **[EVO Mobile Plus](https://github.com/stefano-salvatore7/EVOPlus-Mobile)** 🏠  
+  *Ottimizza Dashboard/Home, Marcatempo Virtuale e Timbrature Mancanti per mobile.*
+
+* **[EVO Icona Giorno OK](https://github.com/stefano-salvatore7/evo-icon-day-ok)** ✅  
+  *Inserisce icona di verifica sulle giornate complete.*
+
+* **[EVO Icona Pasti e Conteggio Ticket](https://github.com/stefano-salvatore7/icona_piadina)** 🫓  
+  *Sostituisce "1" con icona piadina e calcola totale ticket mensili.*
+
+Tutti questi script possono essere usati insieme senza conflitti!
+
+## Novità Versione 4.3
+
+La versione 4.3 introduce l'ottimizzazione mobile:
+
+* ✅ **Layout responsive completo** per smartphone e tablet
+* ✅ **Font ingranditi** (1.8-2rem) su dispositivi mobile
+* ✅ **Controlli touch-friendly** con dimensioni adeguate per tap precisi
+* ✅ **Integrazione automatica** con EVO - Vista Mobile Cartellino
+* ✅ **Media queries intelligenti** basate su larghezza, orientamento e tipo di input
+* ✅ **Supporto schermi piccoli** (≤480px) con font proporzionati
+
+### Versione 4.2 e precedenti
+
+* ✅ **Compatibilità totale** con l'aggiornamento HRSuite del 24/01/2026
 * ✅ **Rilevamento accurato** delle timbrature solo del giorno corrente
 * ✅ **Badge con icona ➡️** nella colonna "Orario" della tabella
 * ✅ **Algoritmo di posizionamento** migliorato con fallback multipli
@@ -114,3 +169,7 @@ Se desideri contribuire a migliorare questo script, sentiti libero di aprire una
 Per un riepilogo dettagliato delle modifiche e delle funzionalità introdotte in ogni versione dello script, consulta il file [CHANGELOG.md](CHANGELOG.md) nel repository.
 
 ---
+
+**Repository:** [evo-exit-time-calc](https://github.com/stefano-salvatore7/evo-exit-time-calc)  
+**Autore:** Stefano  
+**Licenza:** Open Source (libero uso, modifica e distribuzione)
