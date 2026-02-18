@@ -4,6 +4,39 @@ Questo documento traccia le modifiche e gli aggiornamenti attraverso le diverse 
 
 ---
 
+## **Versione 4.3**
+* **Data di Rilascio:** 18 Febbraio 2026
+* **Autore:** Stefano
+* **Modifiche Principali:**
+    * **📱 Ottimizzazione Mobile Completa:** Lo script ora include un layout completamente responsive per dispositivi mobile.
+    * **Layout Responsive:**
+        * Font ingranditi per leggibilità perfetta su smartphone (1.8-2rem per controlli, 2rem bold per valore uscita)
+        * Controlli touch-friendly con dimensioni adeguate
+        * Adattamento automatico basato su larghezza schermo (<768px), orientamento e tipo di input (touch)
+        * Supporto specifico per schermi molto piccoli (≤480px portrait)
+    * **Integrazione con EVO - Vista Mobile Cartellino:**
+        * Quando usato insieme allo script [EVO - Vista Mobile Cartellino](https://github.com/stefano-salvatore7/evo-mobile-cartellino-test), il widget viene automaticamente integrato nella barra superiore mobile
+        * Polling intelligente (200ms) per attendere il container se gli script si caricano in ordine diverso
+        * Tutti gli event listener e funzionalità rimangono intatti durante lo spostamento
+        * L'orario calcolato appare anche come pillola **⏰ HH:MM** nell'header della card del giorno corrente
+    * **Media Queries Avanzate:**
+        * `@media (max-width: 1024px) and (orientation: portrait)` - Tablet e smartphone in portrait
+        * `@media (max-width: 768px)` - Smartphone in landscape
+        * `@media (hover: none) and (pointer: coarse)` - Dispositivi touch indipendentemente dalla risoluzione
+        * `@media (max-width: 480px) and (orientation: portrait)` - Schermi molto piccoli
+    * **CSS Mobile-Specific:**
+        * Container widget: `width: 100%`, `flex-wrap: wrap`, gap aumentato a 1.2rem
+        * Select fascia oraria: `font-size: 1.8rem`, `min-width: 10rem`, appearance reset per iOS
+        * Switch 7:12/6:01: `font-size: 1.8rem`, `min-width: 9rem`, padding aumentato
+        * Box uscita: `font-size: 1.8rem` (label) e `2rem bold` (valore)
+        * Pillola tabella: `font-size: 1.6rem`
+    * **Compatibilità Garantita:**
+        * Testato su Firefox Mobile (Android) e Orion Browser (iOS)
+        * Funziona perfettamente sia standalone che integrato con Vista Mobile Cartellino
+        * Nessun conflitto con gli altri script EVO (Icona Giorno OK, Icona Pasti, EVO Mobile Plus)
+
+---
+
 ## **Versione 4.0**
 * **Data di Rilascio:** 24 Gennaio 2026
 * **Autore:** Stefano
